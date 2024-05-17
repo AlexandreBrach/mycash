@@ -1,0 +1,95 @@
+{
+    "id": "1",
+    "data": {
+        "value": 3000
+    },
+    "children": [
+        {
+            "id": "2",
+            "data": {
+                "value": 100
+            },
+            "children": []
+        },
+        {
+            "id": "3",
+            "data": {
+                "value": -1
+            },
+            "children": [
+                {
+                    "id": "20",
+                    "data": {
+                        "value": 100
+                    },
+                    "children": []
+                },
+                {
+                    "id": "21",
+                    "data": {
+                        "value": 100
+                    },
+                    "children": []
+                },
+                {
+                    "id": "22",
+                    "data": {
+                        "value": 500
+                    },
+                    "children": [
+                        {
+                            "id": "202",
+                            "data": {
+                                "value": 10
+                            },
+                            "children": []
+                        },
+                        {
+                            "id": "211",
+                            "data": {
+                                "value": 30
+                            },
+                            "children": []
+                        },
+                        {
+                            "id": "210",
+                            "data": {
+                                "value": 20
+                            },
+                            "children": []
+                        },
+                        {
+                            "id": "121",
+                            "data": {
+                                "value": 40
+                            },
+                            "children": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "3",
+            "data": {
+                "value": -1
+            },
+            "children": [
+                {
+                    "id": "310",
+                    "data": {
+                        "value": 20
+                    },
+                    "children": []
+                },
+                {
+                    "id": "321",
+                    "data": {
+                        "value": 40
+                    },
+                    "children": []
+                }
+            ]
+        }
+    ]
+}

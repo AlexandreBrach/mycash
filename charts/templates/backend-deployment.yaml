@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "helm.fullname" . }}-backend
+  labels:
+    app: {{ include "helm.fullname" . }}
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "helm.fullname" . }}
+      tier: backend
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        app: {{ include "helm.fullname" . }}
+        tier: backend
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}/compte-database/backend:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: DJANGO_USE_WSGI
+            value: {{ .Values.backend.django_use_wsgi | quote }}
+          - name: UWSGI_WORKER
+            value: {{ .Values.backend.uwsgi_worker | quote }}
+          - name: DJANGO_DEBUG
+            value: {{ .Values.backend.django_debug | quote }}
+          - name: SQL_LOG_REQUEST
+            value: {{ .Values.backend.sql_log_request | quote }}
+          - name: CORS_ORIGIN_ALLOW_ALL
+            value: {{ .Values.backend.cors_origin_allow_all | quote }}
+          - name: DATABASE_HOST
+            value: {{ .Values.backend.database_host }}
+          - name: DATABASE_NAME
+            value: {{ .Values.backend.database_name }}
+          - name: DATABASE_USER
+            value: {{ .Values.backend.database_user }}
+          - name: DATABASE_PASSWORD
+            value: {{ .Values.backend.database_password }}
+          - name: DATABASE_PORT
+            value: {{ .Values.backend.database_port }}
+
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /backend
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /backend
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

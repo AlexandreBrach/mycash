@@ -1,0 +1,25 @@
+table.extraits {
+  cursor: pointer;
+  width: 100%;
+}
+
+table.extraits th {
+  background-color: black;
+}
+
+table.extraits th,
+table.extraits td {
+  padding: 2px 6px;
+}
+
+table.extraits tr:hover {
+  background-color: #000099;
+}
+
+table.extraits tr.selected {
+  background-color: #4b5880;
+}
+
+table.extraits td.montant {
+  text-align: right;
+}

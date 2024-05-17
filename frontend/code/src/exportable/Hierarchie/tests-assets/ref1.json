@@ -1,0 +1,46 @@
+[
+    {
+        "id": "1",
+        "data": {
+            "name": "branch1"
+        },
+        "children": [
+            {
+                "id": "2",
+                "data": {
+                    "name": "leaf11"
+                },
+                "children": []
+            },
+            {
+                "id": "3",
+                "data": {
+                    "name": "leaf12"
+                },
+                "children": []
+            }
+        ]
+    },
+    {
+        "id": "4",
+        "data": {
+            "name": "branch2"
+        },
+        "children": [
+            {
+                "id": "5",
+                "data": {
+                    "name": "leaf21"
+                },
+                "children": []
+            },
+            {
+                "id": "6",
+                "data": {
+                    "name": "leaf22"
+                },
+                "children": []
+            }
+        ]
+    }
+]

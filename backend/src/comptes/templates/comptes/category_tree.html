@@ -1,0 +1,14 @@
+{% load mptt_tags %}
+{% full_tree_for_model comptes.Categorie as nodes %}
+{{% recursetree nodes %}
+"{{ node.id }}" : {
+"name": "{{node.name}}",
+"color": "#{{node.color}}"
+{% if not node.is_leaf_node %}
+,"children": {
+{{ children }}
+}
+{% endif %}
+},
+{% endrecursetree %}
+}

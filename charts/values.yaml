@@ -1,0 +1,91 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  # base path of all your image
+  repository:
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets:
+  - name: docker-registry-credentials
+nameOverride: ""
+fullnameOverride: "comptes"
+
+frontend:
+  # url of the backend, if not the same
+  extraits_api_base_url:
+
+backend:
+  django_use_wsgi: 1
+  uwsgi_worker: 4
+  django_debug: 0
+  # 1 to watch any sql query executed
+  sql_log_request: 0
+  # allow http from any location
+  # this is not recommanded for security reason
+  cors_origin_allow_all: 0
+  # database settings
+  database_host:
+  database_name:
+  database_user:
+  database_password:
+  database_port:
+
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  # true to enabled ingress
+  enabled: false
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: your.domain
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - hosts:
+        - your.domain
+      secretName:
+
+resources:
+  {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

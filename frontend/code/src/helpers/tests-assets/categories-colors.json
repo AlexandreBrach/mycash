@@ -1,0 +1,119 @@
+[
+    {
+        "id": "28",
+        "data": {
+            "color": "#FF0000"
+        },
+        "children": []
+    },
+    {
+        "id": "42",
+        "data": {
+            "color": "#ff005b"
+        },
+        "children": [
+            {
+                "id": "26",
+                "data": {
+                    "color": "#None"
+                },
+                "children": []
+            },
+            {
+                "id": "30",
+                "data": {
+                    "color": "#None"
+                },
+                "children": []
+            }
+        ]
+    },
+    {
+        "id": "43",
+        "data": {
+            "color": "#36ff00"
+        },
+        "children": [
+            {
+                "id": "19",
+                "data": {
+                    "color": "#None"
+                },
+                "children": []
+            },
+            {
+                "id": "20",
+                "data": {
+                    "color": "#None"
+                },
+                "children": []
+            },
+            {
+                "id": "22",
+                "data": {
+                    "color": "#None"
+                },
+                "children": []
+            },
+            {
+                "id": "23",
+                "data": {
+                    "color": "#None"
+                },
+                "children": []
+            }
+        ]
+    },
+    {
+        "id": "45",
+        "data": {
+            "color": "#00ff6e"
+        },
+        "children": [
+            {
+                "id": "46",
+                "data": {
+                    "color": "#None"
+                },
+                "children": [
+                    {
+                        "id": "16",
+                        "data": {
+                            "color": "#None"
+                        },
+                        "children": []
+                    },
+                    {
+                        "id": "17",
+                        "data": {
+                            "color": "#None"
+                        },
+                        "children": []
+                    }
+                ]
+            },
+            {
+                "id": "47",
+                "data": {
+                    "color": "#None"
+                },
+                "children": [
+                    {
+                        "id": "15",
+                        "data": {
+                            "color": "#None"
+                        },
+                        "children": []
+                    },
+                    {
+                        "id": "18",
+                        "data": {
+                            "color": "#None"
+                        },
+                        "children": []
+                    }
+                ]
+            }
+        ]
+    }
+]

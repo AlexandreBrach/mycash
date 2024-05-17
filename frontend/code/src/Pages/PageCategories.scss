@@ -1,0 +1,33 @@
+@use "../style/vars.scss";
+
+#page-categories {
+    display: flex;
+    align-items: stretch;
+    height: 93%;
+    gap: 1em;
+    margin: 1em;
+
+    #category-edition {
+        flex-grow: 1;
+
+        #category-edition-control {
+            #action {
+                float: left;
+            }
+
+            #move-action {
+                float: right;
+            }
+        }
+    }
+
+    #category-list {
+        flex-grow: 0;
+        flex-shrink: 0;
+
+        .category-wrap-container {
+            height: 93%;
+            max-height: 93%;
+        }
+    }
+}

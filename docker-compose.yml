@@ -1,0 +1,52 @@
+version: "3.4"
+
+services:
+  gateway:
+    image: docker-registry.dungeon/compte-database/gateway:$DOCKER_TAG
+    restart: always
+    ports:
+      - $APPLICATION_PORT:80
+
+  backend:
+    image: docker-registry.dungeon/compte-database/backend:$DOCKER_TAG
+    restart: on-failure
+    volumes:
+      - ./extraits:/extraits
+    links:
+      - db
+    environment:
+      - DJANGO_USE_WSGI=$DJANGO_USE_WSGI
+      - UWSGI_WORKER=$UWSGI_WORKER
+      - DJANGO_DEBUG=$DJANGO_DEBUG
+      - SQL_LOG_REQUEST=$SQL_LOG_REQUEST
+      - CORS_ORIGIN_ALLOW_ALL
+      - DATABASE_HOST=$DATABASE_HOST
+      - DATABASE_NAME=$DATABASE_NAME
+      - DATABASE_USER=$DATABASE_USER
+      - DATABASE_PASSWORD=$DATABASE_PASSWORD
+      - DATABASE_PORT=
+
+  frontend:
+    build:
+      context: ./frontend
+    image: docker-registry.dungeon/compte-database/frontend:$DOCKER_TAG
+    restart: on-failure
+    environment:
+      API_BASE_URL: $EXTRAITS_API_BASE_URL
+      AUTH_SERVER_URL: $AUTH_SERVER_URL
+      AUTH_RESOURCE_NAME: $AUTH_RESOURCE_NAME
+      AUTH_REALM: $AUTH_REALM
+    volumes:
+      - ./frontend/code/public/config:/usr/share/nginx/html/config/
+
+  db:
+    image: postgres:9.6.8
+    restart: on-failure
+    volumes:
+      - $V_DATABASE:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=$DATABASE_NAME
+      - POSTGRES_USER=$DATABASE_USER
+      - POSTGRES_PASSWORD=$DATABASE_PASSWORD
+      - TZ=Europe/Paris
+      - PGTZ=Europe/Paris

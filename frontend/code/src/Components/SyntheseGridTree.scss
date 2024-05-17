@@ -1,0 +1,110 @@
+@use '../style/vars.scss';
+
+.table-container {
+  border: 2px solid vars.$color-white;
+  border-radius: vars.$control-border-radius;
+  width: 100%;
+}
+
+table.datagrid {
+  border-collapse: separate;
+  width: 100%;
+  tr {
+    color: vars.$color-medium;
+
+    &.level1 {
+      background-color: #1b1b1b;
+    }
+
+    &.level2 {
+      background-color: #333333;
+    }
+
+    &.level3 {
+      background-color: #444444;
+    }
+
+    &.total {
+      font-weight: bold;
+      color: vars.$color-white;
+    }
+
+    &.unassigned {
+      background-color: vars.$color-dark !important;
+      font-style: italic;
+      color: vars.$color-white;
+    }
+
+    &.bottom {
+      font-size: 1.2em;
+      color: vars.$color-white;
+      border: 2px solid vars.$color-white;
+    }
+
+    &.header {
+      font-size: 1.2em;
+      color: vars.$color-white;
+      border: 2px solid vars.$color-low;
+
+      td {
+        padding: 1em;
+      }
+    }
+  }
+
+  button.link {
+    background: none !important;
+    border: none;
+    padding: 0 !important;
+    cursor: pointer;
+  }
+
+  button.expand {
+    color: #fff;
+    float: right;
+  }
+
+  button.expanded:after {
+    content: '\25B2';
+  }
+
+  button.collapsed:after {
+    content: '\25BC';
+  }
+
+  td,
+  th {
+    border-width: 1px 1px;
+    border-style: solid;
+    border-color: #1b1b1b;
+  }
+
+  td,
+  th {
+    padding: 6px;
+  }
+
+  th {
+    background-color: #111111;
+  }
+
+  td {
+    white-space: nowrap;
+  }
+
+  td.value {
+    text-align: right;
+    font-weight: bold;
+    padding-left: 40px;
+  }
+
+  td.value button {
+    color: white;
+    font-weight: bold;
+  }
+
+  td.category-label span {
+    display: inline-block;
+    margin-right: 40px;
+  }
+}

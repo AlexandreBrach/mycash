@@ -1,0 +1,12 @@
+.env
+__pycache__
+node_modules
+.cache
+.bash_history
+.composer
+/extraits
+*.tfstate
+.terraform
+_venv
+/values.yaml
+.idea

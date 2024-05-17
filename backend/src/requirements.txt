@@ -1,0 +1,11 @@
+python-logstash
+logstash_formatter
+django-elasticsearch-dsl
+elasticsearch-dsl==6.1.0
+django-cors-headers
+Django
+uWSGI
+psycopg2-binary
+unittest-data-provider
+django-mptt
+pika

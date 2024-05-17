@@ -1,0 +1,57 @@
+@use './style/vars.scss';
+@use './style/style.scss';
+
+#app {
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+  height: 95%;
+
+  nav {
+    flex-grow: 0;
+    flex-shrink: 0;
+
+    display: flex;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid vars.$color-fore;
+
+    a {
+      display: inline-block;
+      padding: 0.6em 1em;
+      margin: 0 0.6em;
+
+      cursor: pointer;
+
+      list-style: none;
+      border-style: solid;
+      border-color: vars.$color-fore;
+      border-width: 1px 1px 0px 1px;
+      border-radius: vars.$control-border-radius vars.$control-border-radius 0 0;
+
+      font-weight: bold;
+
+      background-color: vars.$color-dark;
+      color: vars.$color-light;
+
+      &:hover {
+        background-color: vars.$color-shadow;
+      }
+
+      &.selected {
+        color: vars.$color-white;
+        background-color: vars.$color-medium;
+      }
+    }
+  }
+
+  .tab-content {
+    border-style: solid;
+    border-width: 0px 1px 1px 1px;
+    border-color: vars.$color-fore;
+    flex-grow: 2;
+    flex-shrink: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}

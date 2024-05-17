@@ -1,0 +1,163 @@
+@use './vars.scss';
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: vars.$color-back !important;
+  color: vars.$color-fore !important;
+  overflow: hidden;
+}
+
+table {
+  border-collapse: collapse;
+  border: 1px solid vars.$color-dark;
+
+  th,
+  tr,
+  td {
+    border: 1px solid vars.$color-dark;
+  }
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+input[type='button'],
+input[type='submit'],
+button {
+  cursor: pointer;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+  background-color: vars.$color-control;
+  color: vars.$color-dark;
+  border: 1px solid vars.$color-dark;
+  padding: 0.6em 0.6em;
+  border-radius: vars.$control-border-radius;
+
+  &:hover {
+    background-color: vars.$color-light;
+  }
+
+  &:active {
+    transform: translateY(1px);
+    box-shadow: none;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    color: vars.$color-dark;
+    text-shadow: 1px 1px 1px vars.$color-light;
+  }
+}
+
+.thin-scrollbar {
+  /* Custom Scrollbar on Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: vars.$color-light white;
+
+  /* Custom Scrollbar on Chrome, Edge, and Safari */
+  &::-webkit-scrollbar {
+    width: 12px;
+    opacity: 0.5;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 20px;
+    border: 4px solid rgba(0, 0, 0, 0);
+    background-clip: padding-box;
+    min-height: 2em;
+  }
+}
+
+.icon-button {
+  padding: 0em;
+  display: inline-block;
+  font-size: 1em;
+  cursor: pointer;
+  position: relative;
+  top: 0.2em;
+}
+
+select {
+  background-color: vars.$color-light;
+  padding: 0.4em;
+  border-radius: vars.$control-border-radius;
+}
+
+div.section {
+  background-color: vars.$color-dark;
+  border-radius: vars.$section-border-radius;
+  padding: 1em;
+
+  h1 {
+    margin: 0 0 0.6em 0;
+    border-bottom: 3px dotted vars.$color-fore;
+  }
+
+  &.no-background {
+    background-color: transparent;
+  }
+}
+
+// REACT MODAL STYLING
+div.modal {
+  background-color: white;
+  margin: 6em auto;
+  padding: 1.6em;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  max-width: 40em;
+  color: vars.$color-dark;
+  border-radius: vars.$section-border-radius;
+
+  h1 {
+    margin: 0 0 1em 0;
+    padding: 0;
+    border-width: 0px 0px 2px 0px;
+    border-style: dotted;
+    border-color: vars.$color-dark;
+  }
+
+  textarea {
+    width: 100%;
+  }
+
+  div.buttons {
+    text-align: center;
+    margin-top: 1em;
+  }
+
+  table,
+  tr,
+  td {
+    border: 0;
+  }
+}
+
+.low {
+  color: vars.$color-low;
+}
+
+span.ok {
+  color: vars.$color-ok;
+}
+
+span.warning {
+  color: vars.$color-warning;
+}
+
+span.alert {
+  color: vars.$color-alert;
+}

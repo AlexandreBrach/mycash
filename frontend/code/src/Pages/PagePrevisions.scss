@@ -1,0 +1,52 @@
+@use '../style/vars.scss';
+
+#page-previsions {
+  padding: 1em;
+  display: flex;
+  gap: 1em;
+  margin: 1em;
+  align-items: stretch;
+  height: 90%;
+
+  #reccurence-list {
+    margin-bottom: 1em;
+  }
+
+  #matrix {
+    font-size: 0.8em;
+    width: 100%;
+
+    table {
+      width: 100%;
+
+      tr:nth-child(odd) {
+        background: vars.$color-dark;
+      }
+
+      tr:nth-child(even) {
+        background: vars.$color-shadow;
+      }
+
+      tr:last-child {
+        background-color: vars.$color-black;
+      }
+
+      th,
+      tr,
+      td {
+        border: 1px solid vars.$color-black !important;
+      }
+
+      td {
+        text-align: right;
+      }
+    }
+  }
+}
+
+#echeance-modal {
+  table {
+    margin: 1em;
+    width: 100%;
+  }
+}

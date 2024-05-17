@@ -1,0 +1,37 @@
+@use "../style/vars.scss";
+
+.category-wrap-container {
+    background-color: vars.$color-dark;
+    padding-right: 2em;
+    color: black;
+    max-height: 20em;
+    overflow-y: auto;
+    border-radius: vars.$control-border-radius;
+
+    .category-container {
+        margin-left: 1em;
+
+        .section-label {
+            color: vars.$color-fore;
+            margin-top: 1em;
+            font-weight: bold;
+        }
+
+        a.category-label {
+            color: vars.$color-fore;
+            display: inline-block;
+            width: 100%;
+
+            &:hover {
+                background-color: vars.$color-shadow;
+                color: vars.$color-dark;
+            }
+
+            &.selected {
+                font-weight: bold;
+                background-color: vars.$color-black;
+                color: vars.$color-dark;
+            }
+        }
+    }
+}

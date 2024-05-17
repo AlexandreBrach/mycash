@@ -1,0 +1,17 @@
+@use "../../style/vars.scss";
+
+ul.prevision-select {
+    margin: 0;
+    padding: 0;
+
+    li {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        cursor: pointer;
+
+        &:hover {
+            background-color: vars.$color-selection;
+        }
+    }
+}
