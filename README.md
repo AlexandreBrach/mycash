@@ -1,12 +1,12 @@
-# MyCompte
+# MyCash
 
-MyCompte is a cash management tool for individuals and even small businesses.
+MyCash is a cash management tool for individuals and even small businesses.
 
 It is free software under the [GNU Affero](https://www.gnu.org/licenses/agpl-3.0.html) licenses. It is supplied as is and without any guarantee of operation.
 
 # Goal
 
-The goal is to no longer waste time calculating! Simply import your data from your bank and categorize each extract line. MyCompte gives you the summary. Once your categories defined, you can add your forecasts for the next months, no more excess cemtimes will escape you!
+The goal is to no longer waste time calculating! Simply import your data from your bank and categorize each extract line. MyCash gives you the summary. Once your categories defined, you can add your forecasts for the next months, no more excess cemtimes will escape you!
 
 ## Features
 
@@ -42,7 +42,7 @@ helm install -n yournamespace my-comptes ./charts
 
 # Contribute
 
-Any contribution is welcome. If you think something is bad about MyCompte or its documentation the way it is, please help in any way to make it better : this is an Open Source Project.
+Any contribution is welcome. If you think something is bad about MyCash or its documentation the way it is, please help in any way to make it better : this is an Open Source Project.
 
 ## backend development
 
@@ -57,7 +57,10 @@ You can run unit test using :
 
 ## frontend development
 
-Pre requisite : your system need gettext to use the `envsubst` command.
+Pre requisite : your system needs :
+
+- the `envsubst` command (install the gettext from your os distribution)
+- nodejs (version `20.8.0`)
 
 It's hard to work on the frontend code through the Docker container, so you will have to do the following :
 
