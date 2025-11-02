@@ -1,5 +1,3 @@
-version: "3.4"
-
 services:
   gateway:
     image: docker-registry.dungeon/compte-database/gateway:$DOCKER_TAG
