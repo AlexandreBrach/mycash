@@ -1,0 +1,14 @@
+data
+.clinic
+.idea
+.vscode
+coverage
+script
+dist
+Dockerfile
+docker-compose*
+**/*.log
+*.md
+.npmrc
+node_modules/**/*
+node_modules

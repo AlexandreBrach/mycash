@@ -15,7 +15,7 @@ import {
 
 interface Props {
   render: (data: { close: () => void; labelId: string; descriptionId: string }) => React.ReactNode;
-  children: JSX.Element;
+  children: React.ReactElement<any>;
   isOpen: boolean;
   openClose: (state: boolean) => void;
 }

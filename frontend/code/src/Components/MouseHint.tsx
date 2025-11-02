@@ -1,7 +1,8 @@
 import { useClientPoint, useDismiss, useFloating, useHover, useInteractions } from '@floating-ui/react';
+import React from 'react';
 
 interface Props {
-  children: JSX.Element;
+  children: React.ReactElement;
   isOpen: boolean;
   setIsOpen: (state: boolean) => void;
 }

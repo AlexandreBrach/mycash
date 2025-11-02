@@ -42,7 +42,7 @@ helm install -n yournamespace my-comptes ./charts
 
 # Contribute
 
-Any contribution is welcome. If you think something is bad about MyCash or its documentation the way it is, please help in any way to make it better : this is an Open Source Project.
+Any contribution is welcome. If you think something is bad about MyCash or its documentation the way it is, feel free to contribute to make it better.
 
 ## backend development
 
@@ -60,12 +60,12 @@ You can run unit test using :
 Pre requisite : your system needs :
 
 - the `envsubst` command (install the gettext from your os distribution)
-- nodejs (version `20.8.0`)
+- nodejs (version `20.18.0`)
 
 It's hard to work on the frontend code through the Docker container, so you will have to do the following :
 
 - `cd frontend`
-- `export API_BASE_URL=http://localhost:3456`
+- `export EXTRAITS_API_BASE_URL=http://localhost:3456`
   (this will tell the location of the backend, you could also write it onto your .bashrc)
 - `yarn`
 - `yarn start`

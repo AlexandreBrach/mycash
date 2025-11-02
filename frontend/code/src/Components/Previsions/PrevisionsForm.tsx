@@ -2,7 +2,7 @@ import './PrevisionsForm.scss';
 import { FC, useState } from 'react';
 import { PrevisionRules } from '../../interfaces/extraits';
 import CategoryTreeSelect from '../CategoryTreeSelect';
-import ReactDatePicker from 'react-datepicker';
+import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 interface Props {
@@ -65,7 +65,7 @@ const PrevisionsForm: FC<Props> = ({ value, validation, deleteAction }) => {
         <tr>
           <td className="label">Début :</td>
           <td>
-            <ReactDatePicker
+            <DatePicker
               selected={rule.start}
               onChange={(date) =>
                 setRule({
@@ -82,7 +82,7 @@ const PrevisionsForm: FC<Props> = ({ value, validation, deleteAction }) => {
         <tr>
           <td className="label">Fin :</td>
           <td>
-            <ReactDatePicker
+            <DatePicker
               selected={rule.end}
               onChange={(date) =>
                 setRule({

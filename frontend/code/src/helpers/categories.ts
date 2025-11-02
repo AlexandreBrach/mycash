@@ -15,7 +15,7 @@ export const camaieuDerivative: TreeDerivativeMethod<{ color: string }> = (
   n: number,
   depth: number,
 ) => {
-  let c: Color;
+  let c: ReturnType<typeof Color>;
   try {
     c = Color(ancestor.color);
   } catch (e) {
@@ -24,14 +24,18 @@ export const camaieuDerivative: TreeDerivativeMethod<{ color: string }> = (
 
   const method =
     depth === 0
-      ? (c: Color, n: number, i: number): string => {
+      ? (c: ReturnType<typeof Color>, n: number, i: number): string => {
           // Deeper level : saturation scale
-          let d = c.desaturate((i + 1) / (n + 1));
+          // color v5: desaturate() uses percentage (0-100) instead of ratio (0-1)
+          const percentage = ((i + 1) / (n + 1)) * 100;
+          let d = c.desaturate(percentage);
           return d.hex();
         }
-      : (c: Color, n: number, i: number): string => {
+      : (c: ReturnType<typeof Color>, n: number, i: number): string => {
           // Top level : Light scale
-          let d = c.lighten((i + 1) / (n + 1));
+          // color v5: lighten() uses percentage (0-100) instead of ratio (0-1)
+          const percentage = ((i + 1) / (n + 1)) * 100;
+          let d = c.lighten(percentage);
           return d.hex();
         };
 

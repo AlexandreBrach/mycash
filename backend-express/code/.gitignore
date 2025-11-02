@@ -1,0 +1,12 @@
+node_modules
+data/
+tmp/
+.npmrc
+**/*.log
+.vscode
+.idea
+config/.npmrc
+dist
+.env
+coverage
+google

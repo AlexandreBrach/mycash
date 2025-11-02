@@ -1,8 +1,7 @@
 import './Layout.scss';
 
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 import { NavLink } from 'react-router-dom';
-import { ReactNode } from 'react-router/node_modules/@types/react';
 
 interface Props {
   content: ReactNode;

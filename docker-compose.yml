@@ -24,6 +24,12 @@ services:
       - DATABASE_PASSWORD=$DATABASE_PASSWORD
       - DATABASE_PORT=
 
+  backend-express:
+    build: ./backend-express
+    volumes:
+      - ./backend-express/src:/src
+    restart: on-failure
+
   frontend:
     build:
       context: ./frontend
