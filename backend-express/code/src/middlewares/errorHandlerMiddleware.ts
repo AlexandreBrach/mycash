@@ -1,7 +1,6 @@
-import { NextFunction, Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { LoggerServiceInterface, LogLevel } from '../services/Logger/interface';
 import { ServiceException } from '../core/exceptions';
-import { ResponseLocals } from '../infra/mvc/ResponseLocals';
 
 export interface ExceptionInfo {
   message: string;
@@ -13,7 +12,7 @@ function isExceptionInfo(data: any): data is ExceptionInfo {
 }
 
 export const errorHandlerMiddleWare =
-  (logger: LoggerServiceInterface) => (err: unknown, req: Request, res: ResponseLocals, next: NextFunction) => {
+  (logger: LoggerServiceInterface) => (err: unknown, req: Request, res: Response, next: NextFunction) => {
     if (err instanceof ServiceException) {
       let publicMessage = err.publicMessage ? err.publicMessage : 'Unexpected error occurs';
       const httpStatus = err.httpStatus ? err.httpStatus : 500;

@@ -1,13 +1,13 @@
-import { Request, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import asyncHandler from 'express-async-handler';
-import { ResponseLocals } from '../infra/mvc/ResponseLocals';
+// import { ResponseLocals } from '../infra/mvc/ResponseLocals';
 
 const getRouterState = (): Router => {
   const router = Router();
 
   router.get(
     '',
-    asyncHandler(async (req: Request, res: ResponseLocals) => {
+    asyncHandler(async (req: Request, res: Response) => {
       const applicationStateService = res.locals.factory.getApplicationStateService();
       const state = await applicationStateService.get();
       res.send(state);
@@ -16,7 +16,7 @@ const getRouterState = (): Router => {
 
   router.get(
     '/refresh',
-    asyncHandler(async (req: Request, res: ResponseLocals) => {
+    asyncHandler(async (req: Request, res: Response) => {
       const applicationStateService = res.locals.factory.getApplicationStateService();
       const state = await applicationStateService.set();
       res.send(state);

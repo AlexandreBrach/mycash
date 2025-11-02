@@ -1,7 +1,6 @@
-import { NextFunction, Request } from 'express';
-import { ResponseLocals } from '../infra/mvc/ResponseLocals';
+import { NextFunction, Request, Response } from 'express';
 
-export const inputVerboseMiddleware = (req: Request, res: ResponseLocals, next: NextFunction) => {
+export const inputVerboseMiddleware = (req: Request, res: Response, next: NextFunction) => {
   const debugService = res.locals.factory.getDebugService();
   debugService.inputVerbose(req);
   next();

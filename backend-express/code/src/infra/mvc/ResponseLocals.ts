@@ -1,11 +1,11 @@
-import { Response } from 'express';
 import { FactoryInterface } from '../../services/Factory';
 
-export interface LocalsData {
-  factory: FactoryInterface;
-  response: any;
-}
+import 'express';
 
-export interface ResponseLocals extends Response {
-  locals: Response['locals'] & LocalsData;
+declare global {
+  namespace Express {
+    interface Locals {
+      factory: FactoryInterface;
+    }
+  }
 }

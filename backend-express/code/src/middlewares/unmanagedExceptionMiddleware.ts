@@ -1,8 +1,7 @@
-import { Request } from 'express';
-import { ResponseLocals } from '../infra/mvc/ResponseLocals';
+import { Request, Response } from 'express';
 
 export const unmanagedExceptionMiddleWare = () => {
-  return (exception: any, req: Request, res: ResponseLocals) => {
+  return (exception: any, req: Request, res: Response) => {
     const logger = res.locals.factory.getLoggerService();
     logger.error(`[UNMANAGED ERROR THROWN] at ${JSON.stringify(req.originalUrl)}`);
     logger.error(exception);

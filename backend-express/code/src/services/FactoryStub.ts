@@ -5,7 +5,7 @@ import { getConsoleLoggerService } from './Logger/ConsoleLoggerService';
 import { ApplicationConfig } from '../config';
 import { PrevisionsServiceStub } from './PrevisionsService/PrevisionServiceStub';
 
-export const FactoryStub = (): FactoryInterface => {
+export const FactoryStub = (): Partial<FactoryInterface> => {
   const logger = getConsoleLoggerService(ApplicationConfig.LOG_LEVEL);
   const applicationStateService = ApplicationStateServiceStub();
   const previsionsService = PrevisionsServiceStub();
