@@ -1,27 +1,32 @@
 import { getConsoleLoggerService } from './Logger/ConsoleLoggerService';
-import ApplicationStateService, { ApplicationStateServiceInterface } from './ApplicationState/ApplicationStateService';
+import ApplicationStateService, { ApplicationStateServiceInterface } from './Miscellanious/ApplicationStateService';
 import { LoggerServiceInterface } from './Logger/interface';
-import { config } from '../config';
-import { EmailService, EmailServiceInterface } from './Email/EmailService';
+import { PrevisionsService, PrevisionsServiceInterface } from './PrevisionsService/PrevisionsService';
+import ModelFactory from '../models/Factory';
+import { ApplicationConfig } from '../config';
+import { DebugService, DebugServiceInterface } from './Miscellanious/InputVerboseService';
 
 export interface FactoryInterface {
   getApplicationStateService: () => ApplicationStateServiceInterface;
   getLoggerService: () => LoggerServiceInterface;
-  getEmailService: () => EmailServiceInterface; // Placeholder for future email service
+  getPrevisionsService: () => PrevisionsServiceInterface; // Placeholder for future email service
+  getDebugService: () => DebugServiceInterface;
 }
 
-const Factory = (): FactoryInterface => {
+export const Factory = (): FactoryInterface => {
+  const config = ApplicationConfig;
   const logger = getConsoleLoggerService(config.LOG_LEVEL);
+  const debugService = DebugService(config.DEBUG_HTTP, logger);
+  const modelFactory = ModelFactory();
   const applicationStateService = ApplicationStateService();
-  const emailService = EmailService();
+  const previsionsService = PrevisionsService(modelFactory);
 
   return {
     getApplicationStateService: () => applicationStateService,
     getLoggerService: (): LoggerServiceInterface => {
       return logger;
     },
-    getEmailService: () => emailService,
+    getPrevisionsService: () => previsionsService,
+    getDebugService: () => debugService,
   };
 };
-
-export default Factory();

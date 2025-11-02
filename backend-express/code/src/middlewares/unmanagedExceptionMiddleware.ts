@@ -1,12 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
-import { LoggerServiceInterface } from '../services/Logger/interface';
+import { Request } from 'express';
+import { ResponseLocals } from '../infra/mvc/ResponseLocals';
 
-const getUnmanagedExceptionMiddleWare = (logger: LoggerServiceInterface) => {
-  return (exception: any, req: Request, res: Response, next: NextFunction) => {
+export const unmanagedExceptionMiddleWare = () => {
+  return (exception: any, req: Request, res: ResponseLocals) => {
+    const logger = res.locals.factory.getLoggerService();
     logger.error(`[UNMANAGED ERROR THROWN] at ${JSON.stringify(req.originalUrl)}`);
     logger.error(exception);
     res.status(500).send('{"message":"Unexpected error occurs"}');
   };
 };
-
-export default getUnmanagedExceptionMiddleWare;

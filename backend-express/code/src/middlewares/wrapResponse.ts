@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
+import { Request } from 'express';
+import { ResponseLocals } from '../infra/mvc/ResponseLocals';
 
 const getWrapResponseMiddleware = () => {
-  return (req: Request, res: Response) => {
+  return (req: Request, res: ResponseLocals) => {
     res.send(res.locals.response);
   };
 };

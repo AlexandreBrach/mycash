@@ -18,12 +18,10 @@ const env = (varName: string, defaultValue: string = '') => {
   return envVar !== '' ? envVar : defaultValue;
 };
 
-export const config: Config = {
+export const ApplicationConfig: Config = {
   LOG_LEVEL: logLevelFromString(env('LOG_LEVEL', 'INFO')),
   DEBUG_HTTP: env('DEBUG_HTTP', '0') === '1',
   APP_PORT: 8080,
   DATA_DIR: '/data',
   API_URL: env('API_URL', 'http://localhost:8989'),
 };
-
-export default config;

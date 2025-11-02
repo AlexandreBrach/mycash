@@ -1,9 +1,10 @@
-import { FactoryInterface } from '../services/Factory';
+import { getRouterPrevisions } from './getRouterPrevisions';
 import getRouterState from './state';
 
-const RouterFactory = (factory: FactoryInterface) => {
+const RouterFactory = () => {
   return {
-    state: getRouterState(factory.getApplicationStateService()),
+    state: getRouterState(),
+    previsions: getRouterPrevisions(),
   };
 };
 

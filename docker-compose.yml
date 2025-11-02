@@ -27,7 +27,8 @@ services:
   backend-express:
     build: ./backend-express
     volumes:
-      - ./backend-express/src:/src
+      - ./backend-express/code:/svc/app
+    command: yarn start:dev
     restart: on-failure
 
   frontend:

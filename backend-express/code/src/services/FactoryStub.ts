@@ -1,19 +1,19 @@
-import ApplicationStateServiceStub from './ApplicationState/ApplicationStateServiceStub';
+import ApplicationStateServiceStub from './Miscellanious/ApplicationStateServiceStub';
 import { FactoryInterface } from './Factory';
 import { LoggerServiceInterface } from './Logger/interface';
 import { getConsoleLoggerService } from './Logger/ConsoleLoggerService';
-import { config } from '../config';
-import { EmailServiceStub } from './Email/EmailServiceStub';
+import { ApplicationConfig } from '../config';
+import { PrevisionsServiceStub } from './PrevisionsService/PrevisionServiceStub';
 
 export const FactoryStub = (): FactoryInterface => {
-  const logger = getConsoleLoggerService(config.LOG_LEVEL);
+  const logger = getConsoleLoggerService(ApplicationConfig.LOG_LEVEL);
   const applicationStateService = ApplicationStateServiceStub();
-  const emailService = EmailServiceStub();
+  const previsionsService = PrevisionsServiceStub();
   return {
     getApplicationStateService: () => applicationStateService,
     getLoggerService: (): LoggerServiceInterface => {
       return logger;
     },
-    getEmailService: () => emailService,
+    getPrevisionsService: () => previsionsService,
   };
 };
