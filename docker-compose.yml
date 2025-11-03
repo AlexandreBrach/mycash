@@ -30,6 +30,12 @@ services:
       - ./backend-express/code:/svc/app
     command: yarn start:dev
     restart: on-failure
+    environment:
+      - DB_HOST=$DATABASE_HOST
+      - DB_PORT=5432
+      - DB_USER=$DATABASE_USER
+      - DB_PASS=$DATABASE_PASSWORD
+      - DB_NAME=$DATABASE_NAME
 
   frontend:
     build:

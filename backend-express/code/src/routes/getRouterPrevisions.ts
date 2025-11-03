@@ -6,7 +6,9 @@ export const getRouterPrevisions = (): Router => {
   router.get(
     '/rules',
     expressAsyncHandler(async (req: Request, res: Response) => {
-      res.send({ response: [] });
+      const previsionsService = res.locals.factory.getPrevisionsService();
+      const rules = await previsionsService.getAllRules();
+      res.send({ response: rules });
     }),
   );
 

@@ -10,6 +10,7 @@ import { factoryMiddleware } from './middlewares/factoryMiddleware';
 import { inputVerboseMiddleware } from './middlewares/inputVerboseMiddleware';
 import { errorHandlerMiddleWare } from './middlewares/errorHandlerMiddleware';
 import { unmanagedExceptionMiddleWare } from './middlewares/unmanagedExceptionMiddleware';
+import { AppDataSource } from './infra/typeorm/ormconfig';
 
 process.on('unhandledRejection', (reason: unknown, promise: Promise<unknown>) => {
   console.error(`Promise rejection error : missing the use of asyncHandler (express-async-handler) in express action`);
@@ -39,8 +40,10 @@ export const getExpressApp = (): { init: () => Promise<void>; bootstrap: () => P
     // BEFORE INIT
     let flag = false;
 
+    await AppDataSource.initialize();
     while (true) {
       // CHECK (ok ? flag = true)
+
       flag = true;
       if (flag) {
         break;
