@@ -1,5 +1,9 @@
 import { PrevisionsServiceInterface } from './PrevisionsService';
 
 export const PrevisionsServiceStub = (): PrevisionsServiceInterface => {
-  return {};
+  return {
+    getAllRules() {
+      return Promise.resolve([]);
+    },
+  };
 };
