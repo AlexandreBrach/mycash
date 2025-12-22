@@ -34,7 +34,7 @@ const PrevisionsService = (backend: BackendFacadeInterface): PrevisionsServiceIn
 
   return {
     getRules: async (): Promise<PrevisionRules[]> => {
-      const response = (await backend.post<{ response: any[] }>('/previsions/rules', {})).response;
+      const response = (await backend.get<{ response: any[] }>('/previsions/rules')).response;
       // convert Json-stringyfied float values
       return response.map((response) => ({
         ...response,

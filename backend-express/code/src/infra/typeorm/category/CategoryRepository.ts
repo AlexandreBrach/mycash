@@ -1,7 +1,7 @@
 import { AppDataSource } from '../ormconfig';
 import { Category } from './category';
 
-export const CategoryRepository = AppDataSource.getRepository(Category);
+const CategoryOrmRepository = AppDataSource.getRepository(Category);
 
 export interface CategoryRepositoryInterface {
   getAll: () => Promise<Category[]>;
@@ -13,22 +13,22 @@ export interface CategoryRepositoryInterface {
   moveNode: (nodeId: number, newParentId: number) => Promise<void>;
 }
 
-export const CategoryRepositoryImpl = (): CategoryRepositoryInterface => {
+export const CategoryRepository = (): CategoryRepositoryInterface => {
   return {
     getAll: async () => {
-      return CategoryRepository.find({
+      return CategoryOrmRepository.find({
         order: { lft: 'ASC' },
       });
     },
 
     getById: async (id: number) => {
-      return CategoryRepository.findOne({
+      return CategoryOrmRepository.findOne({
         where: { id },
       });
     },
 
     getTree: async () => {
-      const categories = await CategoryRepository.find({
+      const categories = await CategoryOrmRepository.find({
         order: { lft: 'ASC' },
       });
 
@@ -112,7 +112,7 @@ export const CategoryRepositoryImpl = (): CategoryRepositoryInterface => {
     },
 
     update: async (id: number, name: string) => {
-      const category = await CategoryRepository.findOne({
+      const category = await CategoryOrmRepository.findOne({
         where: { id },
       });
 
@@ -121,7 +121,7 @@ export const CategoryRepositoryImpl = (): CategoryRepositoryInterface => {
       }
 
       category.name = name;
-      return CategoryRepository.save(category);
+      return CategoryOrmRepository.save(category);
     },
 
     deleteNode: async (id: number) => {

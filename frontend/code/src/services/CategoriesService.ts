@@ -1,9 +1,9 @@
-import { Tree } from "../exportable/Hierarchie/Tree";
-import { BackendCategory, assembleBackendCategoryTree } from "../helpers/categories";
-import { BackendFacadeInterface } from "./backendFacade";
+import { Tree } from '../exportable/Hierarchie/Tree';
+import { BackendCategory, assembleBackendCategoryTree } from '../helpers/categories';
+import { BackendFacadeInterface } from './backendFacade';
 
 export interface CategorieServiceInterface {
-  getTree: () => Promise<Array<Tree<{ name: string, color: string }>>>;
+  getTree: () => Promise<Array<Tree<{ name: string; color: string }>>>;
   change: (ids: string[], new_value: string) => unknown;
   create: (name: string) => unknown;
   move: (id: string, ancestorId: string) => unknown;
@@ -13,14 +13,13 @@ export interface CategorieServiceInterface {
 }
 
 const CategorieService = (backend: BackendFacadeInterface): CategorieServiceInterface => {
-
   return {
-    getTree: async (): Promise<Array<Tree<{ name: string, color: string }>>> => {
-      return assembleBackendCategoryTree(await backend.post<Record<string, BackendCategory>>("/get-categories-tree", {}));
+    getTree: async (): Promise<Array<Tree<{ name: string; color: string }>>> => {
+      return assembleBackendCategoryTree(await backend.get<Record<string, BackendCategory>>('/categories/tree'));
     },
     change: async (ids: string[], new_value: string) => {
-      return await backend.post("/set-category/" + new_value, {
-        ids
+      return await backend.post('/set-category/' + new_value, {
+        ids,
       });
     },
 
@@ -29,7 +28,7 @@ const CategorieService = (backend: BackendFacadeInterface): CategorieServiceInte
      *
      */
     create: async (name: string) => {
-      return await backend.post("/add-category/" + name, {});
+      return await backend.post('/add-category/' + name, {});
     },
 
     /**
@@ -37,7 +36,7 @@ const CategorieService = (backend: BackendFacadeInterface): CategorieServiceInte
      *
      */
     move: async (id: string, ancestorId: string) => {
-      return await backend.post("/move-category/" + id + "/" + ancestorId, {});
+      return await backend.post('/move-category/' + id + '/' + ancestorId, {});
     },
 
     /**
@@ -45,7 +44,7 @@ const CategorieService = (backend: BackendFacadeInterface): CategorieServiceInte
      *
      */
     rename: async (id: string, newName: string) => {
-      return await backend.post("/rename-category/" + id + "/" + newName, {});
+      return await backend.post('/rename-category/' + id + '/' + newName, {});
     },
 
     /**
@@ -53,14 +52,13 @@ const CategorieService = (backend: BackendFacadeInterface): CategorieServiceInte
      *
      */
     delete: async (id: string) => {
-      return await backend.post("/delete-category/" + id, {});
+      return await backend.post('/delete-category/' + id, {});
     },
 
     updateColor: async (id: string, color: string) => {
-      const url = `/update-category-color/${id}/${color.substring(1)}`
+      const url = `/update-category-color/${id}/${color.substring(1)}`;
       await backend.post(url, {});
-    }
-
+    },
   };
 };
 

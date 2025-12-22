@@ -2,6 +2,7 @@ import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
 import { Rules } from './rules/rules';
 import { Category } from './category/category';
+import { Extrait } from './extrait/extrait';
 
 dotenv.config();
 
@@ -14,5 +15,5 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: false,
   logging: false,
-  entities: [Rules, Category],
+  entities: [Rules, Category, Extrait],
 });
