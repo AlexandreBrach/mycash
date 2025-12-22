@@ -14,6 +14,9 @@ import { ExtraitRepository } from '../infra/typeorm/extrait/ExtraitRepository';
 import { EncoursService, EncoursServiceInterface } from './EncoursService/EncoursService';
 import { EncoursOrmRepository } from '../infra/typeorm/encours/EncoursRepository';
 import { Encours } from '../infra/typeorm/encours/encours';
+import { PrevisionOrmRepository } from '../infra/typeorm/prevision/PrevisionRepository';
+import { Prevision } from '../infra/typeorm/prevision/prevision';
+import { RulesService, RulesServiceInterface } from './RulesService/RulesService';
 
 export interface FactoryInterface {
   getApplicationStateService: () => ApplicationStateServiceInterface;
@@ -23,6 +26,7 @@ export interface FactoryInterface {
   getCategoryService: () => CategoryServiceInterface;
   getExtraitService: () => ExtraitServiceInterface;
   getEncoursService: () => EncoursServiceInterface;
+  getRulesService: () => RulesServiceInterface;
 }
 
 export const Factory = (): FactoryInterface => {
@@ -30,10 +34,11 @@ export const Factory = (): FactoryInterface => {
   const logger = getConsoleLoggerService(config.LOG_LEVEL);
   const debugService = DebugService(config.DEBUG_HTTP, logger);
   const applicationStateService = ApplicationStateService();
-  const previsionsService = PrevisionsService(GenericRepository<Rules>(RulesOrmRepository));
+  const previsionsService = PrevisionsService(GenericRepository<Prevision>(PrevisionOrmRepository));
   const categoryService = CategoryService(CategoryRepository());
   const extraitService = ExtraitService(ExtraitRepository());
   const encoursService = EncoursService(GenericRepository<Encours>(EncoursOrmRepository));
+  const rulesService = RulesService(GenericRepository<Rules>(RulesOrmRepository));
 
   return {
     getApplicationStateService: () => applicationStateService,
@@ -45,5 +50,6 @@ export const Factory = (): FactoryInterface => {
     getCategoryService: () => categoryService,
     getExtraitService: () => extraitService,
     getEncoursService: () => encoursService,
+    getRulesService: () => rulesService,
   };
 };

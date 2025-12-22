@@ -1,12 +1,16 @@
 import { GenericRepositoryInterface } from '../../infra/typeorm/GenericRepository';
-import { Rules } from '../../infra/typeorm/rules/rules';
+import { Prevision } from '../../infra/typeorm/prevision/prevision';
 
 export interface PrevisionsServiceInterface {
-  getAllRules: () => Promise<Rules[]>;
+  getAll: () => Promise<Prevision[]>;
 }
 
-export const PrevisionsService = (RulesRepository: GenericRepositoryInterface<Rules>): PrevisionsServiceInterface => {
+export const PrevisionsService = (
+  previsionRepository: GenericRepositoryInterface<Prevision>,
+): PrevisionsServiceInterface => {
   return {
-    getAllRules: async (): Promise<Rules[]> => RulesRepository.getAll(),
+    getAll: async () => {
+      return previsionRepository.getAll();
+    },
   };
 };

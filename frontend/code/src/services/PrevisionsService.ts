@@ -34,7 +34,7 @@ const PrevisionsService = (backend: BackendFacadeInterface): PrevisionsServiceIn
 
   return {
     getRules: async (): Promise<PrevisionRules[]> => {
-      const response = (await backend.get<{ response: any[] }>('/previsions/rules')).response;
+      const response = await backend.get<any[]>('/previsions/rules');
       // convert Json-stringyfied float values
       return response.map((response) => ({
         ...response,
@@ -82,8 +82,8 @@ const PrevisionsService = (backend: BackendFacadeInterface): PrevisionsServiceIn
       return data.result.map((e) => ({ ...e, amount: parseFloat(e.amount) }));
     },
     getAllPrevisions: async (): Promise<Echeance[]> => {
-      const raw = await backend.get<{ result: BackendEcheance[] }>('/previsions/list');
-      return raw.result.map((e) => ({ ...e, amount: parseFloat(e.amount) }));
+      const raw = await backend.get<BackendEcheance[]>('/previsions');
+      return raw.map((e) => ({ ...e, amount: parseFloat(e.amount) }));
     },
   };
 };

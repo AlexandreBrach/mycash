@@ -2,7 +2,7 @@ import { PrevisionsServiceInterface } from './PrevisionsService';
 
 export const PrevisionsServiceStub = (): PrevisionsServiceInterface => {
   return {
-    getAllRules() {
+    getAll() {
       return Promise.resolve([]);
     },
   };

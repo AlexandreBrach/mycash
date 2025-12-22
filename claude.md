@@ -6,6 +6,10 @@ Se référer au fichier docker-compose pour :
 
 - connaitre les routes et les ports accessible de l'extérieur : le backend est accessible via localhost:$APPLICATION_PORT
 
+## Database
+
+- pour se connecter à la base de donnée, utiliser la commande `psql` comme suit : `docker compose exec db psql -U alex -d comptes`
+
 # Règle de code
 
 ## Typescript
@@ -17,16 +21,33 @@ Se référer au fichier docker-compose pour :
 
 - l'application utilise yarn
 - category are represented in database as a Preorder Tree Traversal
-
-## Database
-
-- pour se connecter à la base de donnée, utiliser obligatoirement le container db avec la commande : `docker compose exec -it db psql`
-
-## Backend
-
 - aucun fichier ne doit s'appeller 'index.ts'
 - les routes sont définies içi : `./backend-express/code/src/routes/`
 - l'accès au services depuis les controlleurs se fait via `res.locals.factory`
 - les routers express sont instanciés par la fabrique `./backend-express/code/src/routes/RouteFactory.ts`
 - les middlewares express sont instanciés par la fabrique `./backend-express/code/src/middlewares/factoryMiddleware.ts`
 - les repository utilisent GenericRepository tant qu'il n'y a rien d'autre que du CRUD basique à effectuer.
+
+### Pattern par défaut : GenericRepository
+
+**IMPORTANT** : Ne PAS créer de repository custom pour du CRUD basique. Utiliser `GenericRepository` tant qu'il n'y a que des opération
+s CRUD standards à effectuer.
+
+Le GenericRepository fournit automatiquement :
+
+- getAll() - récupère toutes les entités
+- getById(id) - récupère par ID
+- find(filter) - recherche avec options TypeORM
+- create(data) - crée une nouvelle entité
+- update(id, data) - met à jour
+- delete(id) - supprime
+
+Quand créer un repository custom
+
+Créer un repository custom UNIQUEMENT si :
+
+- Besoin de requêtes SQL complexes (jointures multiples, agrégations)
+- Besoin de méthodes métier spécifiques (ex: getDistinctMonths())
+- Besoin de logique custom qui ne rentre pas dans le CRUD standard
+
+Voir ExtraitRepository.ts pour un exemple de repository custom.
