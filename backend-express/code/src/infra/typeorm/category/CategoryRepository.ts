@@ -28,9 +28,36 @@ export const CategoryRepositoryImpl = (): CategoryRepositoryInterface => {
     },
 
     getTree: async () => {
-      return CategoryRepository.find({
+      const categories = await CategoryRepository.find({
         order: { lft: 'ASC' },
       });
+
+      // Build tree structure
+      const categoryMap = new Map<number, Category & { children: (Category & { children: any[] })[] }>();
+      const roots: (Category & { children: any[] })[] = [];
+
+      // First pass: create map with children arrays
+      categories.forEach((cat) => {
+        categoryMap.set(cat.id, { ...cat, children: [] });
+      });
+
+      // Second pass: build tree
+      categories.forEach((cat) => {
+        const node = categoryMap.get(cat.id)!;
+        if (cat.parent_id === null || cat.parent_id === undefined) {
+          roots.push(node);
+        } else {
+          const parent = categoryMap.get(cat.parent_id);
+          if (parent) {
+            parent.children.push(node);
+          } else {
+            // If parent not found, treat as root
+            roots.push(node);
+          }
+        }
+      });
+
+      return roots as any;
     },
 
     insert: async (name: string, parentId?: number) => {
