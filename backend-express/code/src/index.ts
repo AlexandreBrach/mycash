@@ -4,7 +4,7 @@ import express, { Express } from 'express';
 import http from 'http';
 import RouterFactory from './routes/RouteFactory';
 import backendCheck from './routes/backendCheck';
-import jsonBodyErrorHandlerMiddleware from './middlewares/jsonBodyErrorHandlerMiddleware';
+import jsonErrorFormatter from './middlewares/jsonErrorFormatter';
 import { ApplicationConfig } from './config';
 import { factoryMiddleware } from './middlewares/factoryMiddleware';
 import { inputVerboseMiddleware } from './middlewares/inputVerboseMiddleware';
@@ -78,25 +78,23 @@ export const getExpressApp = (): { init: () => Promise<void>; bootstrap: () => P
   app.use(factoryMiddleware);
   app.use(inputVerboseMiddleware);
 
-  // *****************
-  // OUTDOOR ACCESS
-  // *****************
-
   // anonymous domain
   app.get('/backend-express/check', backendCheck);
   app.use('/backend-express/state', routerFactory.state);
   app.use('/backend-express/previsions', routerFactory.previsions);
+  app.use('/backend-express/categories', routerFactory.categories);
 
-  // *****************
-  // AUTHENTICATED DOMAIN
-  // *****************
+  app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const err: { httpCode?: number } & Error = new Error('Not Found');
+    err['httpCode'] = 404;
+    next(err);
+  });
 
   // POST PROCESS
 
-  app.use(jsonBodyErrorHandlerMiddleware);
   app.use(errorHandlerMiddleWare);
   app.use(unmanagedExceptionMiddleWare);
-
+  app.use(jsonErrorFormatter);
   return { init, bootstrap, app };
 };
 

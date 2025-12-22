@@ -7,12 +7,15 @@ import { DebugService, DebugServiceInterface } from './Miscellanious/InputVerbos
 import { GenericRepository } from '../infra/typeorm/GenericRepository';
 import { RulesRepository } from '../infra/typeorm/rules/RuleRepository';
 import { Rules } from '../infra/typeorm/rules/rules';
+import { CategoryService, CategoryServiceInterface } from './CategoryService/CategoryService';
+import { CategoryRepositoryImpl } from '../infra/typeorm/category/CategoryRepository';
 
 export interface FactoryInterface {
   getApplicationStateService: () => ApplicationStateServiceInterface;
   getLoggerService: () => LoggerServiceInterface;
   getPrevisionsService: () => PrevisionsServiceInterface; // Placeholder for future email service
   getDebugService: () => DebugServiceInterface;
+  getCategoryService: () => CategoryServiceInterface;
 }
 
 export const Factory = (): FactoryInterface => {
@@ -21,6 +24,7 @@ export const Factory = (): FactoryInterface => {
   const debugService = DebugService(config.DEBUG_HTTP, logger);
   const applicationStateService = ApplicationStateService();
   const previsionsService = PrevisionsService(GenericRepository<Rules>(RulesRepository));
+  const categoryService = CategoryService(CategoryRepositoryImpl());
 
   return {
     getApplicationStateService: () => applicationStateService,
@@ -29,5 +33,6 @@ export const Factory = (): FactoryInterface => {
     },
     getPrevisionsService: () => previsionsService,
     getDebugService: () => debugService,
+    getCategoryService: () => categoryService,
   };
 };

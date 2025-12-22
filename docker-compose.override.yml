@@ -2,24 +2,6 @@ services:
   gateway:
     build: ./gateway
 
-  backend:
-    build: ./backend
-    volumes:
-      - ./backend/src:/src
-
-  # unittest:
-  #   build: ./backend
-  #   volumes:
-  #     - ./backend/src:/src
-  #   command:
-  #     - /auto-test.sh
-  #   environment:
-  #     - DJANGO_USE_WSGI=$DJANGO_USE_WSGI
-  #     - UWSGI_WORKER=$UWSGI_WORKER
-  #     - DJANGO_DEBUG=$DJANGO_DEBUG
-  #     - SQL_LOG_REQUEST=$SQL_LOG_REQUEST
-  #     - CORS_ORIGIN_ALLOW_ALL
-
   adminer:
     image: adminer:4.3-standalone
     restart: always

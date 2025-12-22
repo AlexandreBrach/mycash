@@ -1,10 +1,10 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 export const unmanagedExceptionMiddleWare = () => {
-  return (exception: any, req: Request, res: Response) => {
+  return (exception: any, req: Request, res: Response, next: NextFunction) => {
     const logger = res.locals.factory.getLoggerService();
     logger.error(`[UNMANAGED ERROR THROWN] at ${JSON.stringify(req.originalUrl)}`);
     logger.error(exception);
-    res.status(500).send('{"message":"Unexpected error occurs"}');
+    next(exception);
   };
 };
