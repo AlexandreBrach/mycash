@@ -20,7 +20,7 @@ Se référer au fichier docker-compose pour :
 
 ## Database
 
-- pour se connecter à la base, utiliser le container db
+- pour se connecter à la base de donnée, utiliser obligatoirement le container db avec la commande : `docker compose exec -it db psql`
 
 ## Backend
 
@@ -29,3 +29,4 @@ Se référer au fichier docker-compose pour :
 - l'accès au services depuis les controlleurs se fait via `res.locals.factory`
 - les routers express sont instanciés par la fabrique `./backend-express/code/src/routes/RouteFactory.ts`
 - les middlewares express sont instanciés par la fabrique `./backend-express/code/src/middlewares/factoryMiddleware.ts`
+- les repository utilisent GenericRepository tant qu'il n'y a rien d'autre que du CRUD basique à effectuer.

@@ -8,7 +8,7 @@ export interface EncoursServiceInterface {
 const EncoursService = (backend: BackendFacadeInterface): EncoursServiceInterface => {
   return {
     getAll: async (): Promise<Encours[]> => {
-      const raw = (await backend.get<{ result: BackendEncours[] }>('/encours')).result;
+      const raw = await backend.get<BackendEncours[]>('/encours');
       return raw.map((r) => ({ ...r, date: new Date(r.date), amount: parseFloat(r.amount) }));
     },
   };

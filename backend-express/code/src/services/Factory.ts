@@ -11,6 +11,9 @@ import { CategoryService, CategoryServiceInterface } from './CategoryService/Cat
 import { CategoryRepository } from '../infra/typeorm/category/CategoryRepository';
 import { ExtraitService, ExtraitServiceInterface } from './ExtraitService/ExtraitService';
 import { ExtraitRepository } from '../infra/typeorm/extrait/ExtraitRepository';
+import { EncoursService, EncoursServiceInterface } from './EncoursService/EncoursService';
+import { EncoursOrmRepository } from '../infra/typeorm/encours/EncoursRepository';
+import { Encours } from '../infra/typeorm/encours/encours';
 
 export interface FactoryInterface {
   getApplicationStateService: () => ApplicationStateServiceInterface;
@@ -19,6 +22,7 @@ export interface FactoryInterface {
   getDebugService: () => DebugServiceInterface;
   getCategoryService: () => CategoryServiceInterface;
   getExtraitService: () => ExtraitServiceInterface;
+  getEncoursService: () => EncoursServiceInterface;
 }
 
 export const Factory = (): FactoryInterface => {
@@ -29,6 +33,7 @@ export const Factory = (): FactoryInterface => {
   const previsionsService = PrevisionsService(GenericRepository<Rules>(RulesOrmRepository));
   const categoryService = CategoryService(CategoryRepository());
   const extraitService = ExtraitService(ExtraitRepository());
+  const encoursService = EncoursService(GenericRepository<Encours>(EncoursOrmRepository));
 
   return {
     getApplicationStateService: () => applicationStateService,
@@ -39,5 +44,6 @@ export const Factory = (): FactoryInterface => {
     getDebugService: () => debugService,
     getCategoryService: () => categoryService,
     getExtraitService: () => extraitService,
+    getEncoursService: () => encoursService,
   };
 };
