@@ -2,9 +2,10 @@
 
 ## Docker compose
 
-Se référer au fichier docker-compose pour :
+Conformement au fichier `docker-compose.yml` et au fichier `.env` :
 
-- connaitre les routes et les ports accessible de l'extérieur : le backend est accessible via localhost:$APPLICATION_PORT
+- le backend est accessible via localhost:$APPLICATION_PORT
+- le backend est buildé automatiquement à chaque modification de code, inutile de relancer le serveur
 
 ## Database
 
@@ -19,6 +20,7 @@ Se référer au fichier docker-compose pour :
 
 ## Backend
 
+- le backend en python dans le dossier `backend` est legacy : il est non fonctionnel et ne doit pas être modifié
 - l'application utilise yarn
 - category are represented in database as a Preorder Tree Traversal
 - aucun fichier ne doit s'appeller 'index.ts'

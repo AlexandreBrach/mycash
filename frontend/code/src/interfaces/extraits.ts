@@ -1,6 +1,6 @@
 export interface ExtraitLine {
   id: string;
-  date_operation: Date;
+  date: Date;
   label: string;
   montant: number;
   categorie: string;

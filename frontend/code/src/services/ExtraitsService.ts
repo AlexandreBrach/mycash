@@ -1,5 +1,5 @@
-import { Criteria, ExtraitLine, TSynthese } from "../interfaces/extraits";
-import { BackendFacadeInterface } from "./backendFacade";
+import { Criteria, ExtraitLine, TSynthese } from '../interfaces/extraits';
+import { BackendFacadeInterface } from './backendFacade';
 
 export interface ExtraitsServiceInterface {
   getExtraits: () => {};
@@ -10,8 +10,7 @@ export interface ExtraitsServiceInterface {
   updateNote: (id: string, note: string) => Promise<void>;
 }
 
-const ExtraitsService = (backend: BackendFacadeInterface): // backend: BackendHandlerInterface
-  ExtraitsServiceInterface => {
+const ExtraitsService = (backend: BackendFacadeInterface): ExtraitsServiceInterface => {
   /**
    *
    * When retrieving extraits, the backend response is altered according to the folowing :
@@ -22,7 +21,7 @@ const ExtraitsService = (backend: BackendFacadeInterface): // backend: BackendHa
     var result = [] as ExtraitLine[];
     for (var line of data) {
       line.montant = parseFloat(line.montant);
-      line.date_operation = new Date(line.date_operation);
+      line.date = new Date(line.date);
       if (null !== line.categorie_month) {
         line.categorie_month = new Date(line.categorie_month);
       }
@@ -36,7 +35,7 @@ const ExtraitsService = (backend: BackendFacadeInterface): // backend: BackendHa
    *
    */
   const getExtraits = async (): Promise<Record<number, ExtraitLine>> => {
-    const rawLines = await backend.post<any[]>("/get-extraits", {});
+    const rawLines = await backend.post<any[]>('/get-extraits', {});
     return assembleExtrait(rawLines);
   };
 
@@ -46,14 +45,21 @@ const ExtraitsService = (backend: BackendFacadeInterface): // backend: BackendHa
    */
   const filterExtraits = async (criteria: Criteria): Promise<ExtraitLine[]> => {
     // at start, context may be unready : avoid useless request
-    if (criteria.month === "") {
+    if (criteria.month === '') {
       return [];
     }
     const backendCriteria: Record<string, any> = { ...criteria };
     if (criteria.categoryId !== undefined) {
       backendCriteria.category_id = criteria.categoryId;
     }
-    const response = await backend.post<any[]>("/filter-extraits", backendCriteria);
+    const query: string[] = [];
+    if (criteria.month) {
+      query.push(`month=${criteria.month}`);
+    }
+    if (criteria.categoryId) {
+      query.push(`categoryId=${criteria.categoryId}`);
+    }
+    const response = await backend.get<any[]>(`/extraits/filter?${query.join('&')}`);
     return assembleExtrait(response);
   };
 
@@ -62,13 +68,13 @@ const ExtraitsService = (backend: BackendFacadeInterface): // backend: BackendHa
    *
    */
   const updateRefDate = async (ids: string[], date: string): Promise<void> => {
-    await backend.post<any[]>("/set-date-reference", { ids, date });
+    await backend.post<any[]>('/set-date-reference', { ids, date });
   };
 
   /**
    * Retrieve and assemble synthese
-   * 
-   * @returns 
+   *
+   * @returns
    */
   const retrieveSynthese = async (): Promise<TSynthese> => {
     const data = await backend.get<Record<string, Record<string, string | number>>>('/synthese-category');
@@ -77,7 +83,7 @@ const ExtraitsService = (backend: BackendFacadeInterface): // backend: BackendHa
       response[monthName] = {};
       Object.keys(data[monthName]).forEach((categoryId) => {
         if (categoryId === 'null') {
-          response[monthName]["0"] = parseFloat(data[monthName][categoryId] as string);
+          response[monthName]['0'] = parseFloat(data[monthName][categoryId] as string);
         } else {
           response[monthName][categoryId] = parseFloat(data[monthName][categoryId] as string);
         }
@@ -85,24 +91,19 @@ const ExtraitsService = (backend: BackendFacadeInterface): // backend: BackendHa
     });
 
     return response;
-  }
+  };
 
   const uploadExtraits = async (selectedFile: File): Promise<void> => {
     const formData = new FormData();
 
-    formData.append(
-      "fileUpload",
-      selectedFile!,
-      selectedFile!.name
-    );
+    formData.append('fileUpload', selectedFile!, selectedFile!.name);
 
-    await backend.upload<void>("/upload-extraits", formData);
-  }
+    await backend.upload<void>('/upload-extraits', formData);
+  };
 
   const updateNote = async (id: string, note: string) => {
     await backend.post<void>(`/add-note/${id}`, { note });
-  }
-
+  };
 
   return { getExtraits, filterExtraits, updateRefDate, retrieveSynthese, uploadExtraits, updateNote };
 };

@@ -1,4 +1,4 @@
-FROM node:20.0 AS builder
+FROM node:20.19 AS builder
 RUN mkdir -p /svc/app
 WORKDIR /svc/app
 COPY ./code/package.json* ./

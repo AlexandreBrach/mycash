@@ -85,6 +85,7 @@ export const getExpressApp = (): { init: () => Promise<void>; bootstrap: () => P
   app.use('/backend/categories', routerFactory.categories);
   app.use('/backend/get-months', routerFactory.getMonths);
   app.use('/backend/encours', routerFactory.encours);
+  app.use('/backend/extraits', routerFactory.extraits);
 
   app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
     const err: { httpCode?: number } & Error = new Error('Not Found');
