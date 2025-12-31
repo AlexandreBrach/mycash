@@ -74,12 +74,12 @@ const PrevisionsService = (backend: BackendFacadeInterface): PrevisionsServiceIn
     },
     getEcheancesInInterval: async (start: Date, month: number): Promise<Echeance[]> => {
       const end = new Date(start.getFullYear(), start.getMonth() + month);
-      const data = await backend.get<{ result: BackendEcheance[] }>(
+      const data = await backend.get<BackendEcheance[]>(
         `/previsions/echeances/${start.getFullYear()}-${start.getMonth() + 1}/${end.getFullYear()}-${
           end.getMonth() + 1
         }`,
       );
-      return data.result.map((e) => ({ ...e, amount: parseFloat(e.amount) }));
+      return data.map((e) => ({ ...e, amount: parseFloat(e.amount) }));
     },
     getAllPrevisions: async (): Promise<Echeance[]> => {
       const raw = await backend.get<BackendEcheance[]>('/previsions');

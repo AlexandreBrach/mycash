@@ -6,6 +6,7 @@ import { Extrait } from './extrait/extrait';
 import { Encours } from './encours/encours';
 import { Prevision } from './prevision/prevision';
 import { Synthese } from './synthese/synthese';
+import { Echeance } from './echeance/echeance';
 
 dotenv.config();
 
@@ -18,5 +19,5 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: false,
   logging: false,
-  entities: [Rules, Category, Extrait, Encours, Prevision, Synthese],
+  entities: [Rules, Category, Extrait, Encours, Prevision, Synthese, Echeance],
 });

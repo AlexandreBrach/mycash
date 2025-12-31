@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
+import { Interval } from '../helpers/interval';
 
 export const getRouterPrevisions = (): Router => {
   const router = Router();
@@ -19,6 +20,16 @@ export const getRouterPrevisions = (): Router => {
       const rulesService = res.locals.factory.getRulesService();
       const rules = await rulesService.getAll();
       res.status(200).send(rules);
+    }),
+  );
+
+  router.get(
+    '/echeances/:start/:end',
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const interval = new Interval(new Date(req.params.start), new Date(req.params.end));
+      const previsionService = res.locals.factory.getPrevisionsService();
+      const echeances = await previsionService.getEcheancesInInterval(interval);
+      res.status(200).send(echeances);
     }),
   );
 

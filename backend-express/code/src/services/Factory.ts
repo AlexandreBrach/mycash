@@ -19,6 +19,7 @@ import { Prevision } from '../infra/typeorm/prevision/prevision';
 import { RulesService, RulesServiceInterface } from './RulesService/RulesService';
 import { SyntheseService, SyntheseServiceInterface } from './SyntheseService/SyntheseService';
 import { SyntheseRepository } from '../infra/typeorm/synthese/SyntheseRepository';
+import { EcheanceRepository } from '../infra/typeorm/echeance/EcheanceRepository';
 
 export interface FactoryInterface {
   getApplicationStateService: () => ApplicationStateServiceInterface;
@@ -36,8 +37,9 @@ export const Factory = (): FactoryInterface => {
   const config = ApplicationConfig;
   const logger = getConsoleLoggerService(config.LOG_LEVEL);
   const debugService = DebugService(config.DEBUG_HTTP, logger);
+  const echeanceRepository = EcheanceRepository();
   const applicationStateService = ApplicationStateService();
-  const previsionsService = PrevisionsService(GenericRepository<Prevision>(PrevisionOrmRepository));
+  const previsionsService = PrevisionsService(GenericRepository<Prevision>(PrevisionOrmRepository), echeanceRepository);
   const categoryService = CategoryService(CategoryRepository());
   const extraitService = ExtraitService(ExtraitRepository());
   const encoursService = EncoursService(GenericRepository<Encours>(EncoursOrmRepository));

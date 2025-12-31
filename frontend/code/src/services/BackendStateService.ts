@@ -7,8 +7,9 @@ export interface BackendStateServiceInterface {
 
 const BackendStateService = (backend: BackendFacadeInterface): BackendStateServiceInterface => {
   const retrieveSolde = async (): Promise<number> => {
-    const message = await backend.get<{ response: string }>('/solde');
-    return parseFloat(message.response);
+    return 0;
+    // const message = await backend.get<{ response: string }>('/solde');
+    // return parseFloat(message.response);
   };
 
   const setSolde = async (value: number): Promise<void> => {
