@@ -4,6 +4,7 @@ import { getRouterCategories } from './getRouterCategories';
 import { getRouterGetMonths } from './getMonths';
 import { getRouterEncours } from './getRouterEncours';
 import { getRouterExtraits } from './getRouterExtraits';
+import { getRouterSynthese } from './getRouterSynthese';
 
 const RouterFactory = () => {
   return {
@@ -13,6 +14,7 @@ const RouterFactory = () => {
     getMonths: getRouterGetMonths(),
     encours: getRouterEncours(),
     extraits: getRouterExtraits(),
+    synthese: getRouterSynthese(),
   };
 };
 

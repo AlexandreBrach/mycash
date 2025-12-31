@@ -11,6 +11,14 @@ Conformement au fichier `docker-compose.yml` et au fichier `.env` :
 
 - pour se connecter à la base de donnée, utiliser la commande `psql` comme suit : `docker compose exec db psql -U alex -d comptes`
 
+## Backend Express
+
+### Repositories
+
+- Utiliser `GenericRepository<T>` pour les entités TypeORM par défaut
+- Ne créer un repository spécifique que si des méthodes custom sont nécessaires
+- Pattern: `const service = Service(GenericRepository<Entity>(EntityOrmRepository))`
+
 # Règle de code
 
 ## Typescript
@@ -29,8 +37,6 @@ Conformement au fichier `docker-compose.yml` et au fichier `.env` :
 - les routers express sont instanciés par la fabrique `./backend-express/code/src/routes/RouteFactory.ts`
 - les middlewares express sont instanciés par la fabrique `./backend-express/code/src/middlewares/factoryMiddleware.ts`
 - les repository utilisent GenericRepository tant qu'il n'y a rien d'autre que du CRUD basique à effectuer.
-
-### Pattern par défaut : GenericRepository
 
 **IMPORTANT** : Ne PAS créer de repository custom pour du CRUD basique. Utiliser `GenericRepository` tant qu'il n'y a que des opération
 s CRUD standards à effectuer.

@@ -17,6 +17,8 @@ import { Encours } from '../infra/typeorm/encours/encours';
 import { PrevisionOrmRepository } from '../infra/typeorm/prevision/PrevisionRepository';
 import { Prevision } from '../infra/typeorm/prevision/prevision';
 import { RulesService, RulesServiceInterface } from './RulesService/RulesService';
+import { SyntheseService, SyntheseServiceInterface } from './SyntheseService/SyntheseService';
+import { SyntheseRepository } from '../infra/typeorm/synthese/SyntheseRepository';
 
 export interface FactoryInterface {
   getApplicationStateService: () => ApplicationStateServiceInterface;
@@ -27,6 +29,7 @@ export interface FactoryInterface {
   getExtraitService: () => ExtraitServiceInterface;
   getEncoursService: () => EncoursServiceInterface;
   getRulesService: () => RulesServiceInterface;
+  getSyntheseService: () => SyntheseServiceInterface;
 }
 
 export const Factory = (): FactoryInterface => {
@@ -39,6 +42,7 @@ export const Factory = (): FactoryInterface => {
   const extraitService = ExtraitService(ExtraitRepository());
   const encoursService = EncoursService(GenericRepository<Encours>(EncoursOrmRepository));
   const rulesService = RulesService(GenericRepository<Rules>(RulesOrmRepository));
+  const syntheseService = SyntheseService(SyntheseRepository());
 
   return {
     getApplicationStateService: () => applicationStateService,
@@ -51,5 +55,6 @@ export const Factory = (): FactoryInterface => {
     getExtraitService: () => extraitService,
     getEncoursService: () => encoursService,
     getRulesService: () => rulesService,
+    getSyntheseService: () => syntheseService,
   };
 };
