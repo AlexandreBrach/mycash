@@ -69,8 +69,8 @@ const PrevisionsService = (backend: BackendFacadeInterface): PrevisionsServiceIn
     deleteEcheancier,
     getEcheancier,
     getEcheanciers: async (): Promise<{ id: string; category: string }[]> => {
-      const result = await backend.get<{ result: { id: string; category: string }[] }>(`/previsions/echeanciers`);
-      return result.result;
+      const result = await backend.get<{ id: string; category: string }[]>(`/previsions/echeanciers`);
+      return result;
     },
     getEcheancesInInterval: async (start: Date, month: number): Promise<Echeance[]> => {
       const end = new Date(start.getFullYear(), start.getMonth() + month);

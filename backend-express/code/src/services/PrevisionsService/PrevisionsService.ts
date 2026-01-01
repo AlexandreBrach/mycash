@@ -7,6 +7,7 @@ import { Prevision } from '../../infra/typeorm/prevision/prevision';
 export interface PrevisionsServiceInterface {
   getAll: () => Promise<Prevision[]>;
   getEcheancesInInterval: (interval: Interval) => Promise<Echeance[]>;
+  getEcheancierIds: () => Promise<{ id: number; category: number }[]>;
 }
 
 export const PrevisionsService = (
@@ -19,6 +20,9 @@ export const PrevisionsService = (
     },
     getEcheancesInInterval: (interval: Interval) => {
       return echeanceRepository.inInterval(interval);
+    },
+    getEcheancierIds: () => {
+      return echeanceRepository.getEcheancierIds();
     },
   };
 };

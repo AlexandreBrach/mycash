@@ -33,5 +33,14 @@ export const getRouterPrevisions = (): Router => {
     }),
   );
 
+  router.get(
+    '/echeanciers',
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const previsionsService = res.locals.factory.getPrevisionsService();
+      const echeancierIds = await previsionsService.getEcheancierIds();
+      res.status(200).send(echeancierIds);
+    }),
+  );
+
   return router;
 };
