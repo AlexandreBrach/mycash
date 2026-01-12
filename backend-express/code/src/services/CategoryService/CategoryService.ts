@@ -24,9 +24,36 @@ export interface CategoryServiceInterface {
   moveCategory: (id: number, dto: MoveCategoryDto) => Promise<void>;
 }
 
-export const CategoryService = (
-  categoryRepository: CategoryRepositoryInterface,
-): CategoryServiceInterface => {
+export const assembleCategoryTree = (data: Category[]) => {
+  // Build tree structure
+  const categoryMap = new Map<number, Category & { children: (Category & { children: any[] })[] }>();
+  const roots: (Category & { children: any[] })[] = [];
+
+  // First pass: create map with children arrays
+  data.forEach((cat) => {
+    categoryMap.set(cat.id, { ...cat, children: [] });
+  });
+
+  // Second pass: build tree
+  data.forEach((cat) => {
+    const node = categoryMap.get(cat.id)!;
+    if (cat.parent_id === null || cat.parent_id === undefined) {
+      roots.push(node);
+    } else {
+      const parent = categoryMap.get(cat.parent_id);
+      if (parent) {
+        parent.children.push(node);
+      } else {
+        // If parent not found, treat as root
+        roots.push(node);
+      }
+    }
+  });
+
+  return roots as any;
+};
+
+export const CategoryService = (categoryRepository: CategoryRepositoryInterface): CategoryServiceInterface => {
   return {
     getAllCategories: async () => {
       return categoryRepository.getAll();
@@ -37,7 +64,8 @@ export const CategoryService = (
     },
 
     getCategoryTree: async () => {
-      return categoryRepository.getTree();
+      const flat = await categoryRepository.getFlat();
+      return assembleCategoryTree(flat);
     },
 
     createCategory: async (dto: CreateCategoryDto) => {

@@ -1,0 +1,272 @@
+[
+  {
+    "id": 6,
+    "name": "Facture Eau",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 1,
+    "level": 0
+  },
+  {
+    "id": 3,
+    "name": "Cooperative scolaire",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 4,
+    "level": 0
+  },
+  {
+    "id": 21,
+    "name": "CAF",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 5,
+    "level": 0
+  },
+  {
+    "id": 5,
+    "name": "Citroen C3",
+    "color": "2",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 7,
+    "level": 0
+  },
+  {
+    "id": 11,
+    "name": "Impôt foncier",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 8,
+    "level": 0
+  },
+  {
+    "id": 24,
+    "name": "Internet",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 9,
+    "level": 0
+  },
+  {
+    "id": 2,
+    "name": "Mobile Olivia",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 10,
+    "level": 0
+  },
+  {
+    "id": 32,
+    "name": "Pain",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 11,
+    "level": 0
+  },
+  {
+    "id": 39,
+    "name": "Vacances",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 12,
+    "level": 0
+  },
+  {
+    "id": 4,
+    "name": "Peugeot 2008",
+    "color": "2",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 13,
+    "level": 0
+  },
+  {
+    "id": 18,
+    "name": "Paye Laeti",
+    "color": "2",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 14,
+    "level": 0
+  },
+  {
+    "id": 52,
+    "name": "Assurances Auto",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 15,
+    "level": 0
+  },
+  {
+    "id": 14,
+    "name": "Abonnements TV",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 17,
+    "level": 0
+  },
+  {
+    "id": 26,
+    "name": "Fringues doudous",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 18,
+    "level": 0
+  },
+  {
+    "id": 12,
+    "name": "Taxe Habitation",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 19,
+    "level": 0
+  },
+  {
+    "id": 33,
+    "name": "Dépenses diverses",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 20,
+    "level": 0
+  },
+  {
+    "id": 38,
+    "name": "porte de garage",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 21,
+    "level": 0
+  },
+  {
+    "id": 30,
+    "name": "Activités doudous",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 22,
+    "level": 0
+  },
+  {
+    "id": 23,
+    "name": "Cotisation carte",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 23,
+    "level": 0
+  },
+  {
+    "id": 40,
+    "name": "granulés",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 24,
+    "level": 0
+  },
+  {
+    "id": 13,
+    "name": "Courses",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 25,
+    "level": 0
+  },
+  {
+    "id": 1,
+    "name": "EDF",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 26,
+    "level": 0
+  },
+  {
+    "id": 29,
+    "name": "Transport alex",
+    "color": "2",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 27,
+    "level": 0
+  },
+  {
+    "id": 34,
+    "name": "ALSH",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 28,
+    "level": 0
+  },
+  {
+    "id": 19,
+    "name": "Prêt Franfinance",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 29,
+    "level": 0
+  },
+  {
+    "id": 35,
+    "name": "Garderie",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 31,
+    "level": 0
+  },
+  {
+    "id": 20,
+    "name": "Prêt immobilier",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 32,
+    "level": 0
+  },
+  {
+    "id": 25,
+    "name": "Assurance Habitation",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 35,
+    "level": 0
+  },
+  {
+    "id": 36,
+    "name": "Cantine",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 36,
+    "level": 0
+  },
+  {
+    "id": 22,
+    "name": "Assurance prêt immobilier",
+    "color": "1",
+    "lft": 1,
+    "rght": 2,
+    "tree_id": 38,
+    "level": 0
+  }
+]

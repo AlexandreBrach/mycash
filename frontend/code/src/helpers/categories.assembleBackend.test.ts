@@ -1,68 +1,145 @@
 import { assembleBackendCategoryTree } from './categories';
 
-const raw = {
-  '45': {
+// const raw = {
+//   '45': {
+//     name: 'general',
+//     color: '#32ff00',
+//     children: {
+//       '47': {
+//         name: 'depense',
+//         color: '#None',
+//         children: {
+//           '15': {
+//             name: 'courses',
+//             color: '#None',
+//           },
+//           '18': {
+//             name: 'divers',
+//             color: '#None',
+//           },
+//         },
+//       },
+//       '46': {
+//         name: 'impot',
+//         color: '#None',
+//         children: {
+//           '29': {
+//             name: 'impot locaux',
+//             color: '#None',
+//           },
+//           '17': {
+//             name: 'taxe habitation',
+//             color: '#None',
+//           },
+//           '16': {
+//             name: 'isf',
+//             color: '#None',
+//           },
+//         },
+//       },
+//     },
+//   },
+//   '49': {
+//     name: 'Abonnements',
+//     color: '#c8ff00',
+//     children: {
+//       '24': {
+//         name: 'Internet',
+//         color: '#None',
+//       },
+//       '14': {
+//         name: 'Abonnements TV',
+//         color: '#None',
+//       },
+
+//       '1': {
+//         name: 'EDF',
+//         color: '#None',
+//       },
+//     },
+//   },
+//   '50': {
+//     name: 'Dépenses',
+//     color: '#00ffcf',
+//   },
+// };
+
+const raw = [
+  {
+    id: '45',
     name: 'general',
     color: '#32ff00',
-    children: {
-      '47': {
+    children: [
+      {
+        id: '47',
         name: 'depense',
         color: '#None',
-        children: {
-          '15': {
+        children: [
+          {
+            id: '15',
             name: 'courses',
             color: '#None',
           },
-          '18': {
+          {
+            id: '18',
             name: 'divers',
             color: '#None',
           },
-        },
+        ],
       },
-      '46': {
+      {
+        id: '46',
         name: 'impot',
         color: '#None',
-        children: {
-          '29': {
+        children: [
+          {
+            id: '29',
             name: 'impot locaux',
             color: '#None',
           },
-          '17': {
+          {
+            id: '17',
             name: 'taxe habitation',
             color: '#None',
           },
-          '16': {
+          {
+            id: '16',
             name: 'isf',
             color: '#None',
           },
-        },
+        ],
       },
-    },
+    ],
   },
-  '49': {
+  {
+    id: '49',
     name: 'Abonnements',
     color: '#c8ff00',
-    children: {
-      '24': {
+    children: [
+      {
+        id: '24',
         name: 'Internet',
         color: '#None',
       },
-      '14': {
+      {
+        id: '14',
         name: 'Abonnements TV',
         color: '#None',
       },
 
-      '1': {
+      {
+        id: '1',
         name: 'EDF',
         color: '#None',
       },
-    },
+    ],
   },
-  '50': {
+  {
+    id: '50',
     name: 'Dépenses',
     color: '#00ffcf',
   },
-};
+];
 
 it('tree to options', () => {
   const result = assembleBackendCategoryTree(raw);
@@ -179,5 +256,5 @@ it('tree to options', () => {
     },
   ];
 
-  expect(result).toStrictEqual(expected);
+  expect(result).toEqual(expected);
 });

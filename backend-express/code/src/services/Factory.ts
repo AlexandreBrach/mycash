@@ -20,6 +20,8 @@ import { RulesService, RulesServiceInterface } from './RulesService/RulesService
 import { SyntheseService, SyntheseServiceInterface } from './SyntheseService/SyntheseService';
 import { SyntheseRepository } from '../infra/typeorm/synthese/SyntheseRepository';
 import { EcheanceRepository } from '../infra/typeorm/echeance/EcheanceRepository';
+import { AppDataSource } from '../infra/typeorm/ormconfig';
+import { Category } from '../infra/typeorm/category/category';
 
 export interface FactoryInterface {
   getApplicationStateService: () => ApplicationStateServiceInterface;
@@ -40,7 +42,8 @@ export const Factory = (): FactoryInterface => {
   const echeanceRepository = EcheanceRepository();
   const applicationStateService = ApplicationStateService();
   const previsionsService = PrevisionsService(GenericRepository<Prevision>(PrevisionOrmRepository), echeanceRepository);
-  const categoryService = CategoryService(CategoryRepository());
+  const categoryRepository = CategoryRepository(AppDataSource.getRepository(Category));
+  const categoryService = CategoryService(categoryRepository);
   const extraitService = ExtraitService(ExtraitRepository());
   const encoursService = EncoursService(GenericRepository<Encours>(EncoursOrmRepository));
   const rulesService = RulesService(GenericRepository<Rules>(RulesOrmRepository));

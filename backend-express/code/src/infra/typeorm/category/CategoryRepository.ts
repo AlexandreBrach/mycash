@@ -1,63 +1,35 @@
+import { Repository } from 'typeorm';
 import { AppDataSource } from '../ormconfig';
 import { Category } from './category';
-
-const CategoryOrmRepository = AppDataSource.getRepository(Category);
 
 export interface CategoryRepositoryInterface {
   getAll: () => Promise<Category[]>;
   getById: (id: number) => Promise<Category | null>;
-  getTree: () => Promise<Category[]>;
+  getFlat: () => Promise<Category[]>;
   insert: (name: string, parentId?: number) => Promise<Category>;
   update: (id: number, name: string) => Promise<Category | null>;
   deleteNode: (id: number) => Promise<void>;
   moveNode: (nodeId: number, newParentId: number) => Promise<void>;
 }
 
-export const CategoryRepository = (): CategoryRepositoryInterface => {
+export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepositoryInterface => {
   return {
     getAll: async () => {
-      return CategoryOrmRepository.find({
+      return ormRepo.find({
         order: { lft: 'ASC' },
       });
     },
 
     getById: async (id: number) => {
-      return CategoryOrmRepository.findOne({
+      return ormRepo.findOne({
         where: { id },
       });
     },
 
-    getTree: async () => {
-      const categories = await CategoryOrmRepository.find({
+    getFlat: async () => {
+      return await ormRepo.find({
         order: { lft: 'ASC' },
       });
-
-      // Build tree structure
-      const categoryMap = new Map<number, Category & { children: (Category & { children: any[] })[] }>();
-      const roots: (Category & { children: any[] })[] = [];
-
-      // First pass: create map with children arrays
-      categories.forEach((cat) => {
-        categoryMap.set(cat.id, { ...cat, children: [] });
-      });
-
-      // Second pass: build tree
-      categories.forEach((cat) => {
-        const node = categoryMap.get(cat.id)!;
-        if (cat.parent_id === null || cat.parent_id === undefined) {
-          roots.push(node);
-        } else {
-          const parent = categoryMap.get(cat.parent_id);
-          if (parent) {
-            parent.children.push(node);
-          } else {
-            // If parent not found, treat as root
-            roots.push(node);
-          }
-        }
-      });
-
-      return roots as any;
     },
 
     insert: async (name: string, parentId?: number) => {
@@ -112,7 +84,7 @@ export const CategoryRepository = (): CategoryRepositoryInterface => {
     },
 
     update: async (id: number, name: string) => {
-      const category = await CategoryOrmRepository.findOne({
+      const category = await ormRepo.findOne({
         where: { id },
       });
 
@@ -121,7 +93,7 @@ export const CategoryRepository = (): CategoryRepositoryInterface => {
       }
 
       category.name = name;
-      return CategoryOrmRepository.save(category);
+      return ormRepo.save(category);
     },
 
     deleteNode: async (id: number) => {

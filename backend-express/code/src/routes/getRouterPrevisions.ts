@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import { Interval } from '../helpers/interval';
+import { PrevisionAssembler } from './assembler/PrevisionAssembler';
 
 export const getRouterPrevisions = (): Router => {
   const router = Router();
@@ -10,7 +11,7 @@ export const getRouterPrevisions = (): Router => {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const previsionsService = res.locals.factory.getPrevisionsService();
       const previsions = await previsionsService.getAll();
-      res.status(200).send(previsions);
+      res.status(200).send(PrevisionAssembler(previsions));
     }),
   );
 

@@ -27,14 +27,14 @@ export const camaieuDerivative: TreeDerivativeMethod<{ color: string }> = (
       ? (c: ReturnType<typeof Color>, n: number, i: number): string => {
           // Deeper level : saturation scale
           // color v5: desaturate() uses percentage (0-100) instead of ratio (0-1)
-          const percentage = ((i + 1) / (n + 1)) * 100;
+          const percentage = (i + 1) / (n + 1);
           let d = c.desaturate(percentage);
           return d.hex();
         }
       : (c: ReturnType<typeof Color>, n: number, i: number): string => {
           // Top level : Light scale
           // color v5: lighten() uses percentage (0-100) instead of ratio (0-1)
-          const percentage = ((i + 1) / (n + 1)) * 100;
+          const percentage = (i + 1) / (n + 1);
           let d = c.lighten(percentage);
           return d.hex();
         };

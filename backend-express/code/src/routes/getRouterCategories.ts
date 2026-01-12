@@ -1,10 +1,6 @@
 import { Request, Response, Router } from 'express';
 import expressAsyncHandler from 'express-async-handler';
-import {
-  CreateCategoryDto,
-  UpdateCategoryDto,
-  MoveCategoryDto,
-} from '../services/CategoryService/CategoryService';
+import { CreateCategoryDto, UpdateCategoryDto, MoveCategoryDto } from '../services/CategoryService/CategoryService';
 
 export const getRouterCategories = (): Router => {
   const router = Router();
@@ -15,7 +11,7 @@ export const getRouterCategories = (): Router => {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
       const categories = await categoryService.getAllCategories();
-      res.send({ response: categories });
+      res.send(categories);
     }),
   );
 
@@ -25,7 +21,7 @@ export const getRouterCategories = (): Router => {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
       const tree = await categoryService.getCategoryTree();
-      res.send({ response: tree });
+      res.send(tree);
     }),
   );
 
