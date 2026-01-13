@@ -48,20 +48,21 @@ export const getCategoryName = (availableCategories: Array<Tree<{ name: string }
 };
 
 export interface BackendCategory {
+  id: string;
   name: string;
   color: string;
-  children?: Record<string, BackendCategory>;
+  children?: BackendCategory[];
 }
 
 export const assembleBackendCategoryTree = (
-  raw: Record<string, BackendCategory>,
+  raw: Array<BackendCategory>,
 ): Array<Tree<{ name: string; color: string }>> => {
-  return Object.keys(raw).map((id) => ({
-    id,
+  return raw.map((r) => ({
+    id: r.id,
     data: {
-      name: raw[id].name,
-      color: raw[id].color,
+      name: r.name,
+      color: `#${r.color}`,
     },
-    children: raw[id].children ? assembleBackendCategoryTree(raw[id].children!) : [],
+    children: r.children ? assembleBackendCategoryTree(r.children) : [],
   }));
 };

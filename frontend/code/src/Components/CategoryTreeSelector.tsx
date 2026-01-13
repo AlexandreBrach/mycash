@@ -28,7 +28,7 @@ const CategoryWrap: FC<CWProps> = ({ id, name, children, value, colors, handle, 
                 handle(id!);
               }}
             >
-              {name} ({id})
+              {name}
             </a>
           )}
         </span>

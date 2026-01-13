@@ -15,8 +15,9 @@ export interface CategorieServiceInterface {
 const CategorieService = (backend: BackendFacadeInterface): CategorieServiceInterface => {
   return {
     getTree: async (): Promise<Array<Tree<{ name: string; color: string }>>> => {
-      const result = await backend.get<Record<string, BackendCategory>>('/categories/tree');
-      return assembleBackendCategoryTree(result);
+      const result = await backend.get<BackendCategory[]>('/categories/tree');
+      const assembled = assembleBackendCategoryTree(result);
+      return assembled;
     },
     change: async (ids: string[], new_value: string) => {
       return await backend.post('/set-category/' + new_value, {
