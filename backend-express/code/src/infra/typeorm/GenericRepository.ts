@@ -1,4 +1,4 @@
-import { FindManyOptions, FindOptionsWhere, ObjectLiteral, Repository } from 'typeorm';
+import { FindManyOptions, FindOptionsWhere, In, ObjectLiteral, Repository } from 'typeorm';
 
 export interface CompteEntity extends ObjectLiteral {
   id: number;
@@ -12,6 +12,7 @@ export interface GenericRepositoryInterface<Entity extends CompteEntity> {
   create: (data: Entity) => Promise<Entity>;
   update: (id: number, data: Partial<Entity>, create: boolean) => Promise<Entity>;
   delete: (id: number) => Promise<void>;
+  bulkUpdateById: <K extends keyof Entity>(propertyName: K, value: Entity[K], ids: number[]) => Promise<void>;
 }
 
 export const GenericRepository = <Entity extends CompteEntity>(
@@ -45,6 +46,13 @@ export const GenericRepository = <Entity extends CompteEntity>(
     await repository.delete(id);
   };
 
+  const bulkUpdateById = async <K extends keyof Entity>(propertyName: K, value: Entity[K], ids: number[]) => {
+    const criteria: FindOptionsWhere<CompteEntity> = { id: In(ids) };
+    const props: Partial<Entity> = {};
+    props[propertyName] = value;
+    await repository.update(criteria, props);
+  };
+
   return {
     getAll,
     find,
@@ -53,5 +61,6 @@ export const GenericRepository = <Entity extends CompteEntity>(
     create,
     update,
     delete: remove,
+    bulkUpdateById,
   };
 };

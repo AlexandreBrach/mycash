@@ -20,7 +20,7 @@ const CategorieService = (backend: BackendFacadeInterface): CategorieServiceInte
       return assembled;
     },
     change: async (ids: string[], new_value: string) => {
-      return await backend.post('/set-category/' + new_value, {
+      return await backend.post('/extraits/set-category/' + new_value, {
         ids,
       });
     },

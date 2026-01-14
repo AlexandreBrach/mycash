@@ -2,7 +2,6 @@ import { Criteria, ExtraitLine, TSynthese } from '../interfaces/extraits';
 import { BackendFacadeInterface } from './backendFacade';
 
 export interface ExtraitsServiceInterface {
-  getExtraits: () => {};
   filterExtraits: (criteria: Criteria) => Promise<ExtraitLine[]>;
   updateRefDate: (ids: string[], date: string) => Promise<void>;
   retrieveSynthese: () => Promise<TSynthese>;
@@ -28,15 +27,6 @@ const ExtraitsService = (backend: BackendFacadeInterface): ExtraitsServiceInterf
       result.push(line);
     }
     return result;
-  };
-
-  /**
-   * get extraits
-   *
-   */
-  const getExtraits = async (): Promise<Record<number, ExtraitLine>> => {
-    const rawLines = await backend.post<any[]>('/get-extraits', {});
-    return assembleExtrait(rawLines);
   };
 
   /**
@@ -105,7 +95,7 @@ const ExtraitsService = (backend: BackendFacadeInterface): ExtraitsServiceInterf
     await backend.post<void>(`/add-note/${id}`, { note });
   };
 
-  return { getExtraits, filterExtraits, updateRefDate, retrieveSynthese, uploadExtraits, updateNote };
+  return { filterExtraits, updateRefDate, retrieveSynthese, uploadExtraits, updateNote };
 };
 
 export default ExtraitsService;

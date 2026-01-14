@@ -1,5 +1,7 @@
 import { Router, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
+import { AckAssembler } from './assembler/AckAssembler';
+import { ExtraitAssembler } from './assembler/ExtraitAssembler';
 
 export const getRouterExtraits = (): Router => {
   const router = Router();
@@ -24,7 +26,18 @@ export const getRouterExtraits = (): Router => {
       }
 
       const extraits = await extraitService.getExtraitsByCategoryAndMonth({ categoryId, month });
-      res.status(200).send(extraits);
+      res.status(200).send(ExtraitAssembler(extraits));
+    }),
+  );
+
+  router.post(
+    '/set-category/:categoryId(\\d+)',
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const extraitService = res.locals.factory.getExtraitService();
+      const categoryId = parseInt(req.params.categoryId);
+      const ids = req.body.ids;
+      await extraitService.assignCategory(categoryId, ids);
+      res.status(200).send(AckAssembler());
     }),
   );
 

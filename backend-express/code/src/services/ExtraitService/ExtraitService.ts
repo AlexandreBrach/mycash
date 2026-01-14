@@ -5,6 +5,7 @@ import { FindManyOptions, Raw } from 'typeorm';
 export interface ExtraitServiceInterface {
   getDistinctMonths: () => Promise<string[]>;
   getExtraitsByCategoryAndMonth: (p: { categoryId?: number; month?: string }) => Promise<Extrait[]>;
+  assignCategory: (categoryId: number, extraitsId: number[]) => Promise<void>;
 }
 
 export const ExtraitService = (extraitRepository: ExtraitRepositoryInterface): ExtraitServiceInterface => {
@@ -23,6 +24,9 @@ export const ExtraitService = (extraitRepository: ExtraitRepositoryInterface): E
       };
 
       return extraitRepository.find(options);
+    },
+    assignCategory: async (categoryId: number, extraitsIds: number[]) => {
+      await extraitRepository.bulkUpdateById('categorie_id', categoryId, extraitsIds);
     },
   };
 };
