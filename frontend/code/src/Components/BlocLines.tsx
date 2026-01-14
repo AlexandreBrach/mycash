@@ -74,7 +74,7 @@ const BlocLines: FC<Props> = ({ lines, unSelect, onSelect, selection, onNoteSele
               lineA[sortField]! > lineB[sortField]! ? sortOrder : -sortOrder,
             )
             .map((item) => {
-              // @TODO : == instead of === because object key seems to cast to numner
+              // @TODO : == instead of === because object key seems to cast to number
               const colorItem = colors.find((c) => c.id == item.categorie);
               return (
                 <tr

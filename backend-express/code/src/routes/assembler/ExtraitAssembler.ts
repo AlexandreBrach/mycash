@@ -5,10 +5,11 @@ export const ExtraitAssembler = (e: Extrait | Extrait[]): any => {
     return e.map(ExtraitAssembler);
   }
 
-  const { categorie, ...wanted } = e;
+  const { categorie, categorie_id, ...wanted } = e;
 
   return {
     ...wanted,
+    categorie: categorie_id,
     categorie_name: categorie?.name,
   };
 };
