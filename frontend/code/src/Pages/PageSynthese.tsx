@@ -193,7 +193,7 @@ const PageSynthese: FC = () => {
 
   const content = (
     <div id="page-synthese">
-      <div id="state">
+      <div id="state" style={{ border: '1px solid blue' }}>
         {selectedMonth && (
           <div id="month-selector">
             <BsFillCaretLeftFill id="left" onClick={goOneMonthAfter} />
@@ -203,11 +203,11 @@ const PageSynthese: FC = () => {
           </div>
         )}
 
-        <div id="table-container">
+        <div id="table-container" style={{ border: '1px solid cyan' }}>
           <MontantTable values={indicators} />
         </div>
       </div>
-      <div id="synthese-grid">
+      <div id="synthese-grid" style={{ border: '1px solid green' }}>
         {selectedMonth && (
           <>
             {settings.syntheseMonth && synthese[settings.syntheseMonth] && (
@@ -239,7 +239,7 @@ const PageSynthese: FC = () => {
           </>
         )}
       </div>
-      <div id="encours">
+      <div id="encours" style={{ border: '1px solid red' }}>
         {encours
           // bind encours to their facts
           .map((e) => ({
