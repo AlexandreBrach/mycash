@@ -1,4 +1,4 @@
-import { FindManyOptions, FindOptionsWhere, In, ObjectLiteral, Repository } from 'typeorm';
+import { DeepPartial, FindManyOptions, FindOptionsWhere, In, ObjectLiteral, Repository } from 'typeorm';
 
 export interface CompteEntity extends ObjectLiteral {
   id: number;
@@ -9,7 +9,7 @@ export interface GenericRepositoryInterface<Entity extends CompteEntity> {
   getById: (id: number) => Promise<Entity | null>;
   findOne: (filter: FindManyOptions<Entity>) => Promise<Entity | null>;
   find: (filter: FindManyOptions<Entity>) => Promise<Entity[]>;
-  create: (data: Entity) => Promise<Entity>;
+  create: (data: Omit<Entity, 'id'>) => Promise<void>;
   update: (id: number, data: Partial<Entity>, create: boolean) => Promise<Entity>;
   delete: (id: number) => Promise<void>;
   bulkUpdateById: <K extends keyof Entity>(propertyName: K, value: Entity[K], ids: number[]) => Promise<void>;
@@ -27,9 +27,9 @@ export const GenericRepository = <Entity extends CompteEntity>(
     return repository.findOneBy({ id } as FindOptionsWhere<Entity>);
   };
 
-  const create = async (data: Entity) => {
-    const entity = repository.create(data);
-    return repository.save(entity);
+  const create = async (data: Omit<Entity, 'id'>) => {
+    const entity = repository.create(data as DeepPartial<Entity>);
+    await repository.save(entity);
   };
 
   const update = async (id: number, data: Partial<Entity>, create: boolean = true) => {

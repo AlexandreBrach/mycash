@@ -59,7 +59,7 @@ const ExtraitsService = (backend: BackendFacadeInterface): ExtraitsServiceInterf
    *
    */
   const updateRefDate = async (ids: string[], date: string): Promise<void> => {
-    await backend.post<any[]>('/set-date-reference', { ids, date });
+    await backend.post<any[]>('/extrait/date-reference', { ids, date });
   };
 
   /**

@@ -1,5 +1,7 @@
 Ne jamais faire de commit.
 Ne pas formatter le code.
+Ignore le dossier `backend`
+Les erreurs ne sont jamais renvoyé en résultat : s'il y a une erreur ou quelque chose d'imprévu, on lance explicitement une exception.
 
 # Architecture
 

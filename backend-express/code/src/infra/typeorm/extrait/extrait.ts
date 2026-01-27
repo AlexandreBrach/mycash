@@ -31,8 +31,8 @@ export class Extrait {
   @Column({ type: 'decimal', precision: 9, scale: 2, nullable: true })
   solde?: number;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  note?: string;
+  @Column({ type: 'varchar', length: 255, nullable: false })
+  note!: string;
 
   @Column({ type: 'date', nullable: true })
   categorie_month?: Date;

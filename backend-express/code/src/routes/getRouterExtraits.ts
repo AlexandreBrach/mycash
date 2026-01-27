@@ -22,12 +22,14 @@ export const getRouterExtraits = (): Router => {
     '/upload',
     upload.single('fileUpload'),
     expressAsyncHandler(async (req: Request, res: Response) => {
+      const extraitService = res.locals.factory.getExtraitService();
       if (!req.file) {
         res.status(400).send({ error: 'Aucun fichier fourni' });
         return;
       }
 
       const fileContent = req.file.buffer.toString('utf-8');
+      await extraitService.injectCsv(fileContent);
 
       res.status(200).send({
         message: 'Fichier CSV reçu avec succès',
