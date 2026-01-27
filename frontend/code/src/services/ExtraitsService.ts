@@ -90,7 +90,7 @@ const ExtraitsService = (backend: BackendFacadeInterface): ExtraitsServiceInterf
 
     formData.append('fileUpload', selectedFile!, selectedFile!.name);
 
-    await backend.upload<void>('/upload-extraits', formData);
+    await backend.upload<void>('/extraits/upload', formData);
   };
 
   const updateNote = async (id: string, note: string) => {

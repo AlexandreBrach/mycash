@@ -1,10 +1,41 @@
 import { Router, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
+import multer from 'multer';
 import { AckAssembler } from './assembler/AckAssembler';
 import { ExtraitAssembler } from './assembler/ExtraitAssembler';
 
 export const getRouterExtraits = (): Router => {
   const router = Router();
+
+  const upload = multer({
+    storage: multer.memoryStorage(),
+    fileFilter: (req, file, cb) => {
+      if (file.mimetype === 'text/csv' || file.originalname.endsWith('.csv')) {
+        cb(null, true);
+      } else {
+        cb(new Error('Le fichier doit être au format CSV'));
+      }
+    },
+  });
+
+  router.post(
+    '/upload',
+    upload.single('fileUpload'),
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      if (!req.file) {
+        res.status(400).send({ error: 'Aucun fichier fourni' });
+        return;
+      }
+
+      const fileContent = req.file.buffer.toString('utf-8');
+
+      res.status(200).send({
+        message: 'Fichier CSV reçu avec succès',
+        filename: req.file.originalname,
+        size: req.file.size,
+      });
+    }),
+  );
 
   router.get(
     '/filter',

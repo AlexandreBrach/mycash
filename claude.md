@@ -1,3 +1,6 @@
+Ne jamais faire de commit.
+Ne pas formatter le code.
+
 # Architecture
 
 ## Docker compose
