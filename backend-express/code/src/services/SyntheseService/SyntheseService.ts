@@ -12,7 +12,8 @@ export const SyntheseService = (syntheseRepository: SyntheseRepositoryInterface)
     const allCategories = new Set<string>();
 
     for (const r of raw) {
-      const monthYear = `${r.year}-${r.month}`;
+      const monthYear = `${r.year}-${String(r.month).padStart(2, '0')}`;
+
       if (!temp[monthYear]) {
         temp[monthYear] = {};
       }

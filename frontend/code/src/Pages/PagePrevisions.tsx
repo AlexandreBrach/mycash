@@ -10,6 +10,7 @@ import factory from '../services/Factory';
 import PrevisionTable from '../Components/PrevisionTable';
 import EcheancierForm from '../Components/EcheancierForm';
 import { getCategoryName } from '../helpers/categories';
+import { Month } from '../exportable/Interval/Month';
 
 const now = new Date();
 
@@ -19,7 +20,7 @@ const newRule: PrevisionRules = {
   categoryName: 'unknown',
   id: 0,
   period: 1,
-  start: now,
+  start: new Month(now),
   end: undefined,
 };
 
@@ -55,7 +56,7 @@ const PagePrevisions: FC = () => {
 
   const handleStartNewSaisie = () => {
     setEcheancierId(undefined);
-    setEcheancier([{ date: now.getFullYear() + '-' + (now.getMonth() + 1), amount: 0, categoryId: '0' }]);
+    setEcheancier([{ date: new Month(now), amount: 0, categoryId: '0' }]);
     setIsOpenEcheancier(true);
   };
 
@@ -93,7 +94,7 @@ const PagePrevisions: FC = () => {
   };
 
   const refreshEcheances = async () => {
-    const e = await previsionService.getEcheancesInInterval(startDate, COLUMN_NUMBER);
+    const e = await previsionService.getEcheancesInInterval(startMonth, COLUMN_NUMBER);
     setEcheances(e);
   };
 
@@ -105,7 +106,7 @@ const PagePrevisions: FC = () => {
   const [listEcheanciers, setListEcheanciers] = useState<{ id: string; category: string }[]>([]);
   const [echeancierId, setEcheancierId] = useState<string | undefined>();
   const [echeances, setEcheances] = useState<Echeance[]>([]);
-  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [startMonth, setStartDate] = useState<Month>(new Month(new Date()));
 
   useEffect(() => {
     void refreshEcheancierList();
@@ -113,7 +114,7 @@ const PagePrevisions: FC = () => {
 
   useEffect(() => {
     void refreshEcheances();
-  }, [startDate]);
+  }, [startMonth]);
 
   const previsionRules = state.previsionsRules;
   const previsionService = factory.getPrevisionsService();
@@ -187,7 +188,7 @@ const PagePrevisions: FC = () => {
           <PrevisionTable
             echeanceTable={state.monthlyPrevisions}
             columnNumber={COLUMN_NUMBER}
-            startDate={startDate}
+            startMonth={startMonth}
             onChangeStartDate={setStartDate}
           />
         )}

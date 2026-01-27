@@ -6,6 +6,7 @@ import { Echeance } from '../interfaces/extraits';
 import CategoryTreeSelect from './CategoryTreeSelect';
 import MonthInput from './MonthInput';
 import Montant from './Montant';
+import { Month } from '../exportable/Interval/Month';
 
 interface Props {
   echeancier: Echeance[];
@@ -23,7 +24,7 @@ const EcheancierForm: FC<Props> = ({ echeancier, echeancierId, onChange, validat
 
   const handleAddLine = () => {
     const last = echeancier.slice(-1)[0];
-    echeancier.push({ ...last, date: monthService.getMonthAfter(last.date) });
+    echeancier.push({ ...last, date: last.date.nextMonth() });
     onChange([...echeancier]);
   };
 
@@ -32,7 +33,7 @@ const EcheancierForm: FC<Props> = ({ echeancier, echeancierId, onChange, validat
     onChange([...echeancier]);
   };
 
-  const handleChangeStartMonthEcheancier = (value: string) => {
+  const handleChangeStartMonthEcheancier = (value: Month) => {
     setStartMonthEcheancier(value);
     onChange([{ date: value, amount: 0, categoryId: echeancierCategoryId }]);
   };
@@ -46,12 +47,7 @@ const EcheancierForm: FC<Props> = ({ echeancier, echeancierId, onChange, validat
   const now = new Date();
 
   const formatService = factory.getFormatService();
-  const monthService = factory.getMonthService();
-
-  const [startMonthEcheancier, setStartMonthEcheancier] = useState<string>(
-    now.getFullYear() + '-' + (now.getMonth() + 1),
-  );
-
+  const [startMonthEcheancier, setStartMonthEcheancier] = useState<Month>(new Month(now));
   const echeancierCategoryId = !echeancier[0] ? '0' : echeancier[0].categoryId ? echeancier[0].categoryId : '0';
 
   return (
@@ -87,7 +83,7 @@ const EcheancierForm: FC<Props> = ({ echeancier, echeancierId, onChange, validat
           <tbody>
             {echeancier.map((e, index) => (
               <tr key={index}>
-                <td>{formatService.renderMonthFromSimplified(e.date)} : </td>
+                <td>{formatService.renderMonth(e.date.getDate())} : </td>
                 <td>
                   <input
                     type="number"

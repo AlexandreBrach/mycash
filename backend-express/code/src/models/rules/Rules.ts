@@ -1,4 +1,4 @@
-export interface RulesProperties {
+export interface RuleProperties {
   id: number;
   categoryId: string;
   categoryName: string;
@@ -8,7 +8,7 @@ export interface RulesProperties {
   end: Date | null;
 }
 
-export class Rules implements RulesProperties {
+export class Rule implements RuleProperties {
   id!: number;
   categoryId!: string;
   categoryName!: string;
@@ -17,7 +17,7 @@ export class Rules implements RulesProperties {
   start!: Date;
   end!: Date | null;
 
-  constructor(props: RulesProperties) {
+  constructor(props: RuleProperties) {
     Object.assign(this, props);
   }
 }

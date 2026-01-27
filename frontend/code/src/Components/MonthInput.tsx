@@ -1,17 +1,29 @@
 import { FC } from 'react';
 import { getMonthName } from '../helpers/format';
+import { Month } from '../exportable/Interval/Month';
 
 interface Props {
-  value: string;
-  onChange: (value: string) => void;
+  value: Month;
+  onChange: (value: Month) => void;
 }
 
 const MonthInput: FC<Props> = ({ value, onChange }) => {
-  const [year, month] = value.split('-');
+  const year = value.getDate().getUTCFullYear();
+  const month = value.getDate().getUTCMonth();
+
+  const handleChangeMonth = (s: string) => {
+    value.setMonth(parseInt(s));
+    onChange(value);
+  };
+
+  const handleChangeYear = (s: string) => {
+    value.setYear(parseInt(s));
+    onChange(value);
+  };
 
   return (
     <>
-      <select onChange={(e) => onChange(`${year}-${parseInt(e.target.value)}`)} value={parseInt(month)}>
+      <select onChange={(e) => handleChangeMonth(e.target.value)} value={month}>
         {[...Array(12).keys()]
           .map((n) => n + 1)
           .map((e) => getMonthName(e))
@@ -21,7 +33,7 @@ const MonthInput: FC<Props> = ({ value, onChange }) => {
             </option>
           ))}
       </select>
-      <select onChange={(e) => onChange(`${parseInt(e.target.value)}-${month}`)} value={parseInt(year)}>
+      <select onChange={(e) => handleChangeYear(e.target.value)} value={year}>
         {[...Array(12).keys()]
           .map((n) => n + 2023)
           .map((y) => (

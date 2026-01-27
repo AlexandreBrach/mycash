@@ -1,3 +1,4 @@
+import { Month } from '../exportable/Interval/Month';
 import { BackendEcheance, Echeance, Echeancier, PrevisionRules } from '../interfaces/extraits';
 import { BackendFacadeInterface } from './backendFacade';
 
@@ -9,7 +10,7 @@ export interface PrevisionsServiceInterface {
   deleteEcheancier: (collection: string) => Promise<void>;
   setEcheancier: (echeancierId: string | undefined, echeancier: Echeance[]) => Promise<void>;
   getEcheanciers: () => Promise<{ id: string; category: string }[]>;
-  getEcheancesInInterval: (startMonth: Date, month: number) => Promise<Echeance[]>;
+  getEcheancesInInterval: (startMonth: Month, month: number) => Promise<Echeance[]>;
   getAllPrevisions: () => Promise<Echeance[]>;
 }
 
@@ -24,6 +25,7 @@ const PrevisionsService = (backend: BackendFacadeInterface): PrevisionsServiceIn
       echeancier: result.echeancier.map((e) => ({
         ...e,
         amount: parseFloat(e.amount),
+        date: Month.fromString(e.date),
       })),
     };
   };
@@ -39,16 +41,16 @@ const PrevisionsService = (backend: BackendFacadeInterface): PrevisionsServiceIn
       return response.map((response) => ({
         ...response,
         amount: parseFloat(response.amount as string),
-        start: new Date(response.start),
-        end: response.end === null ? undefined : new Date(response.end),
+        start: new Month(new Date(response.start)),
+        end: response.end === null ? undefined : new Month(new Date(response.end)),
       }));
     },
     setRule: async (rule: PrevisionRules): Promise<void> => {
       const e: Record<string, string> = {
-        start: backend.toBackendDateFormat(rule.start),
+        start: backend.toBackendDateFormat(rule.start.getDate()),
       };
       if (rule.end) {
-        e.end = backend.toBackendDateFormat(rule.end);
+        e.end = backend.toBackendDateFormat(rule.end.getDate());
       }
       return await backend.post<void>('/previsions/rule', { rule: { ...rule, ...e } });
     },
@@ -72,18 +74,15 @@ const PrevisionsService = (backend: BackendFacadeInterface): PrevisionsServiceIn
       const result = await backend.get<{ id: string; category: string }[]>(`/previsions/echeanciers`);
       return result;
     },
-    getEcheancesInInterval: async (start: Date, month: number): Promise<Echeance[]> => {
-      const end = new Date(start.getFullYear(), start.getMonth() + month);
-      const data = await backend.get<BackendEcheance[]>(
-        `/previsions/echeances/${start.getFullYear()}-${start.getMonth() + 1}/${end.getFullYear()}-${
-          end.getMonth() + 1
-        }`,
-      );
-      return data.map((e) => ({ ...e, amount: parseFloat(e.amount) }));
+    getEcheancesInInterval: async (start: Month, months: number): Promise<Echeance[]> => {
+      const end = start.nextMonth(months);
+      const data = await backend.get<BackendEcheance[]>(`/previsions/echeances/${start.toString()}/${end.toString()}`);
+      console.log('data', data);
+      return data.map((e) => ({ ...e, amount: parseFloat(e.amount), date: Month.fromString(e.date) }));
     },
     getAllPrevisions: async (): Promise<Echeance[]> => {
       const raw = await backend.get<BackendEcheance[]>('/previsions');
-      return raw.map((e) => ({ ...e, amount: parseFloat(e.amount) }));
+      return raw.map((e) => ({ ...e, amount: parseFloat(e.amount), date: Month.fromString(e.date) }));
     },
   };
 };

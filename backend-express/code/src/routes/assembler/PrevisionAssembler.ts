@@ -7,7 +7,7 @@ export const PrevisionAssembler = (p: Prevision | Prevision[]): any => {
   const { id, categorie_id, due_date, ...other } = p;
   return {
     ...other,
-    categoryId: categorie_id,
+    categoryId: categorie_id.toString(),
     date: due_date,
   };
 };

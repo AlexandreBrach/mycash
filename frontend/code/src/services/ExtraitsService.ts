@@ -1,3 +1,4 @@
+import { Month } from '../exportable/Interval/Month';
 import { Criteria, ExtraitLine, TSynthese } from '../interfaces/extraits';
 import { BackendFacadeInterface } from './backendFacade';
 
@@ -35,7 +36,7 @@ const ExtraitsService = (backend: BackendFacadeInterface): ExtraitsServiceInterf
    */
   const filterExtraits = async (criteria: Criteria): Promise<ExtraitLine[]> => {
     // at start, context may be unready : avoid useless request
-    if (criteria.month === '') {
+    if (criteria.month === undefined) {
       return [];
     }
     const backendCriteria: Record<string, any> = { ...criteria };
@@ -72,11 +73,11 @@ const ExtraitsService = (backend: BackendFacadeInterface): ExtraitsServiceInterf
     const response: TSynthese = {};
     Object.keys(data).forEach((monthName: string) => {
       response[monthName] = {};
-      Object.keys(data[monthName]).forEach((categoryId) => {
+      Object.keys(data[monthName]).forEach((categoryId: string) => {
         if (categoryId === 'null') {
-          response[monthName]['0'] = parseFloat(data[monthName][categoryId] as string);
+          response[monthName]['0'] = data[monthName][categoryId] as number;
         } else {
-          response[monthName][categoryId] = parseFloat(data[monthName][categoryId] as string);
+          response[monthName][categoryId] = data[monthName][categoryId] as number;
         }
       });
     });

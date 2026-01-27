@@ -9,7 +9,7 @@ export const ExtraitAssembler = (e: Extrait | Extrait[]): any => {
 
   return {
     ...wanted,
-    categorie: categorie_id,
+    categorie: categorie_id?.toString(),
     categorie_name: categorie?.name,
   };
 };

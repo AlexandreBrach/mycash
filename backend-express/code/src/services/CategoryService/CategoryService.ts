@@ -17,17 +17,19 @@ export interface MoveCategoryDto {
 export interface CategoryServiceInterface {
   getAllCategories: () => Promise<Category[]>;
   getCategoryById: (id: number) => Promise<Category | null>;
-  getCategoryTree: () => Promise<Category[]>;
+  getCategoryTree: () => Promise<CategoryTree>;
   createCategory: (dto: CreateCategoryDto) => Promise<Category>;
   updateCategory: (id: number, dto: UpdateCategoryDto) => Promise<Category | null>;
   deleteCategory: (id: number) => Promise<void>;
   moveCategory: (id: number, dto: MoveCategoryDto) => Promise<void>;
 }
 
-export const assembleCategoryTree = (data: Category[]) => {
+export type CategoryTree = (Category & { children: CategoryTree })[];
+
+export const assembleCategoryTree = (data: Category[]): CategoryTree => {
   // Build tree structure
-  const categoryMap = new Map<number, Category & { children: (Category & { children: any[] })[] }>();
-  const roots: (Category & { children: any[] })[] = [];
+  const categoryMap = new Map<number, Category & { children: (Category & { children: CategoryTree })[] }>();
+  const roots: CategoryTree = [];
 
   // First pass: create map with children arrays
   data.forEach((cat) => {
@@ -50,7 +52,7 @@ export const assembleCategoryTree = (data: Category[]) => {
     }
   });
 
-  return roots as any;
+  return roots;
 };
 
 export const CategoryService = (categoryRepository: CategoryRepositoryInterface): CategoryServiceInterface => {

@@ -4,6 +4,7 @@ import { PrevisionRules } from '../../interfaces/extraits';
 import CategoryTreeSelect from '../CategoryTreeSelect';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { Month } from '../../exportable/Interval/Month';
 
 interface Props {
   value: PrevisionRules;
@@ -66,11 +67,11 @@ const PrevisionsForm: FC<Props> = ({ value, validation, deleteAction }) => {
           <td className="label">Début :</td>
           <td>
             <DatePicker
-              selected={rule.start}
+              selected={rule.start.getDate()}
               onChange={(date) =>
                 setRule({
                   ...rule,
-                  start: date!,
+                  start: new Month(date!),
                 })
               }
               dateFormat="MM/yyyy"
@@ -83,11 +84,11 @@ const PrevisionsForm: FC<Props> = ({ value, validation, deleteAction }) => {
           <td className="label">Fin :</td>
           <td>
             <DatePicker
-              selected={rule.end}
+              selected={rule.end?.getDate()}
               onChange={(date) =>
                 setRule({
                   ...rule,
-                  end: date === null ? undefined : date,
+                  end: date === null ? undefined : new Month(date),
                 })
               }
               dateFormat="MM/yyyy"

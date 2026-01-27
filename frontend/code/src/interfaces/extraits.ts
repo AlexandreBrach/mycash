@@ -1,3 +1,5 @@
+import { Month } from '../exportable/Interval/Month';
+
 export interface ExtraitLine {
   id: string;
   date: Date;
@@ -13,13 +15,7 @@ export type ExtraitField = keyof ExtraitLine;
 
 export interface Criteria {
   categoryId: string | undefined;
-  month: string | undefined;
-}
-
-export interface MonthData {
-  label: string; // 'Octobre 2023'
-  value: string; // '2023-10'
-  timestamp: number;
+  month: Month | undefined;
 }
 
 export type TSynthese = Record<string, Record<string, number>>;
@@ -30,17 +26,17 @@ export interface PrevisionRules {
   categoryName: string;
   period: number;
   amount: number;
-  start: Date;
-  end: Date | undefined;
+  start: Month;
+  end: Month | undefined;
 }
 
 export interface Echeance {
-  date: string;
+  date: Month;
   amount: number;
   categoryId: string;
 }
 
-export type BackendEcheance = Omit<Echeance, 'amount'> & { amount: string };
+export type BackendEcheance = Omit<Echeance, 'amount' | 'date'> & { amount: string; date: string };
 
 export interface Echeancier<T = Echeance> {
   collection: string;

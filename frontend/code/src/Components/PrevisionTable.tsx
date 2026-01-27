@@ -7,21 +7,22 @@ import Montant from './Montant';
 import { treeFlatten } from '../exportable/Hierarchie/Tree';
 import { BiSolidChevronLeftCircle, BiSolidChevronRightCircle } from 'react-icons/bi';
 import { Echeance } from '../interfaces/extraits';
+import { Month } from '../exportable/Interval/Month';
 
 interface Props {
   echeanceTable: Echeance[];
-  startDate: Date;
-  onChangeStartDate: (value: Date) => void;
+  startMonth: Month;
+  onChangeStartDate: (value: Month) => void;
   columnNumber: number;
 }
 
-const PrevisionTable: FC<Props> = ({ echeanceTable, startDate, onChangeStartDate, columnNumber }) => {
+const PrevisionTable: FC<Props> = ({ echeanceTable, startMonth, onChangeStartDate, columnNumber }) => {
   const handleLeft = () => {
-    onChangeStartDate(new Date(startDate.getFullYear(), startDate.getMonth() - 1));
+    onChangeStartDate(startMonth.nextMonth(-1));
   };
 
   const handleRight = () => {
-    onChangeStartDate(new Date(startDate.getFullYear(), startDate.getMonth() + 1));
+    onChangeStartDate(startMonth.nextMonth());
   };
 
   const { state } = useContext(AppContext);
@@ -37,24 +38,20 @@ const PrevisionTable: FC<Props> = ({ echeanceTable, startDate, onChangeStartDate
 
   const totals = getPrevisionsMonthTotal(echeanceTable);
 
-  const months = [...Array(columnNumber).keys()].map(
-    (n) => new Date(startDate.getFullYear(), startDate.getMonth() + n),
-  );
-
-  const simplifiedMonth = months.map((m) => `${m.getFullYear()}-${m.getMonth() + 1}`);
+  const months: Month[] = [...Array(columnNumber).keys()].map((e) => startMonth.nextMonth(e));
 
   return (
     <table className="previsions">
       <thead>
         <tr>
           <th></th>
-          {simplifiedMonth.map((month, i) => (
-            <th key={month}>
+          {months.map((month: Month, i) => (
+            <th key={month.toString()}>
               {i === 0 && (
                 <BiSolidChevronLeftCircle className="icon-button" style={{ float: 'left' }} onClick={handleLeft} />
               )}
-              {formatService.renderMonthFromSimplified(month)}
-              {i === Object.keys(simplifiedMonth).length - 1 && (
+              {formatService.renderMonth(month.getDate())}
+              {i === Object.keys(months).length - 1 && (
                 <BiSolidChevronRightCircle className="icon-button" style={{ float: 'right' }} onClick={handleRight} />
               )}
             </th>
@@ -65,17 +62,12 @@ const PrevisionTable: FC<Props> = ({ echeanceTable, startDate, onChangeStartDate
         {categoriesId.map((categoryId) => (
           <tr key={categoryId}>
             <td>{flat.find((v) => v.id === categoryId)?.data?.name}</td>
-            {simplifiedMonth.map((month) => (
+            {months.map((month: Month) => (
               <td key={`${categoryId}${month}`}>
                 {
                   <Montant
                     value={echeanceTable
-                      .filter(
-                        (e) =>
-                          e.categoryId === categoryId &&
-                          // @TODO : clean this awful stuff once real-date based
-                          `${e.date.split('-')[0]}-${parseInt(e.date.split('-')[1])}` === month,
-                      )
+                      .filter((e) => e.categoryId === categoryId && e.date.getDate() === month.getDate())
                       .reduce((p, c) => p + c.amount, 0)}
                   />
                 }
@@ -85,11 +77,8 @@ const PrevisionTable: FC<Props> = ({ echeanceTable, startDate, onChangeStartDate
         ))}
         <tr>
           <td>TOTAL</td>
-          {simplifiedMonth.map((month: string) => {
-            const total = totals.filter(
-              // @TODO : clean this awful stuff once real-date based
-              (e) => `${e.date.split('-')[0]}-${parseInt(e.date.split('-')[1])}` === month,
-            )[0];
+          {months.map((month: Month) => {
+            const total = totals.filter((e) => e.date.getDate() === month.getDate())[0];
             return (
               <td key={`total${month}`}>
                 <Montant value={total !== undefined ? total.amount : 0} />

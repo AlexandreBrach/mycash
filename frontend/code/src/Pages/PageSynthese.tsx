@@ -3,16 +3,17 @@ import { FC, useContext, useEffect, useState } from 'react';
 import Layout from '../Layout';
 import factory from '../services/Factory';
 import SyntheseGridTree from '../Components/SyntheseGridTree';
-import { Echeance, Encours, ExtraitLine, MonthData, TSynthese } from '../interfaces/extraits';
+import { Echeance, Encours, ExtraitLine, TSynthese } from '../interfaces/extraits';
 import { AppContext } from './AppContext';
 import { BsFillCaretLeftFill, BsFillCaretRightFill } from 'react-icons/bs';
 import { CriteriaContext } from './CriteriaContext';
 import { MouseHint } from '../Components/MouseHint';
 import Montant from '../Components/Montant';
-import { FlatTree, getAllDescendantId, treeFindById, treeFlatReduce } from '../exportable/Hierarchie/Tree';
+import { FlatTree, getAllDescendantId, treeFlatReduce } from '../exportable/Hierarchie/Tree';
 import { getMonthPrevisions } from '../helpers/previsions';
 import MontantTable from '../Components/MontantTable';
 import EncoursWrapper from '../Components/Encours';
+import { Month } from '../exportable/Interval/Month';
 
 const PageSynthese: FC = () => {
   /**
@@ -37,17 +38,17 @@ const PageSynthese: FC = () => {
 
   const goOneMonthBefore = () => {
     if (currentIndex > 0) {
-      dispatch({ type: 'setSyntheseMonth', data: state.availableMonths[currentIndex - 1].value });
+      dispatch({ type: 'setSyntheseMonth', data: state.availableMonths[currentIndex - 1] });
     }
   };
 
   const goOneMonthAfter = () => {
     if (currentIndex < state.availableMonths.length) {
-      dispatch({ type: 'setSyntheseMonth', data: state.availableMonths[currentIndex + 1].value });
+      dispatch({ type: 'setSyntheseMonth', data: state.availableMonths[currentIndex + 1] });
     }
   };
 
-  var retrieveExtraitPortion = async (categoryId: string, month: string) => {
+  var retrieveExtraitPortion = async (categoryId: string, month: Month) => {
     setExtraitPortion(await extraitService.filterExtraits({ categoryId, month }));
     setMouseHint(true);
   };
@@ -65,8 +66,8 @@ const PageSynthese: FC = () => {
   const [echeances, setEcheances] = useState<Echeance[]>([]);
   const [encours, setEncours] = useState<Encours[]>([]);
 
-  const selectedMonth = state.availableMonths.filter((month) => month.value === settings.syntheseMonth)[0];
-  const currentIndex = state.availableMonths.findIndex((m: MonthData) => m.value === settings.syntheseMonth);
+  const selectedMonth = state.availableMonths.filter((month) => month === settings.syntheseMonth)[0];
+  const currentIndex = state.availableMonths.findIndex((m: Month) => m === settings.syntheseMonth);
 
   const month = settings.syntheseMonth;
 
@@ -83,18 +84,18 @@ const PageSynthese: FC = () => {
   useEffect(() => {
     const run = async () => {
       if (month) {
-        const m = parseInt(month.split('-')[1]);
-        const y = parseInt(month.split('-')[0]);
-        setEcheances(await previsionService.getEcheancesInInterval(new Date(y, m, 10), 1));
-        setEncours(state.encours.filter((e) => e.date.getMonth() + 1 === m && e.date.getFullYear() === y));
+        setEcheances(await previsionService.getEcheancesInInterval(month, 1));
+        setEncours(state.encours.filter((e) => month.getInterval().contain(e.date)));
       }
     };
     void run();
   }, [month, previsionService, state.encours]);
 
-  let previsions = month
-    ? getMonthPrevisions(state.previsionsRules, parseInt(month.split('-')[1]), parseInt(month.split('-')[0]))
-    : [];
+  if (!settings.syntheseMonth) {
+    return <></>;
+  }
+
+  let previsions = month ? getMonthPrevisions(state.previsionsRules, month) : [];
 
   // on ajoute les échéances issue des échéanciers statiques
   echeances.forEach((e) => {
@@ -102,7 +103,8 @@ const PageSynthese: FC = () => {
   });
 
   // synthese d'extraits factuel
-  const s = synthese[settings.syntheseMonth!];
+  const s = synthese[settings.syntheseMonth!.toString()];
+
   const facts: FlatTree<{ value: number }> = s ? Object.keys(s).map((id) => ({ id, data: { value: s[id] } })) : [];
 
   // synthese d'extraits factuel et prévues
@@ -193,24 +195,24 @@ const PageSynthese: FC = () => {
 
   const content = (
     <div id="page-synthese">
-      <div id="state" style={{ border: '1px solid blue' }}>
+      <div id="state">
         {selectedMonth && (
           <div id="month-selector">
             <BsFillCaretLeftFill id="left" onClick={goOneMonthAfter} />
             &nbsp;&nbsp;&nbsp;
-            {selectedMonth.label}&nbsp;&nbsp;&nbsp;
+            {factory.getFormatService().renderMonth(selectedMonth.getDate())}&nbsp;&nbsp;&nbsp;
             {currentIndex > 0 && <BsFillCaretRightFill id="right" onClick={goOneMonthBefore} />}
           </div>
         )}
 
-        <div id="table-container" style={{ border: '1px solid cyan' }}>
+        <div id="table-container">
           <MontantTable values={indicators} />
         </div>
       </div>
-      <div id="synthese-grid" style={{ border: '1px solid green' }}>
+      <div id="synthese-grid">
         {selectedMonth && (
           <>
-            {settings.syntheseMonth && synthese[settings.syntheseMonth] && (
+            {settings.syntheseMonth && synthese[settings.syntheseMonth.toString()] && (
               <SyntheseGridTree
                 apportsFacts={apportsFacts}
                 previsions={previsions}
@@ -239,7 +241,7 @@ const PageSynthese: FC = () => {
           </>
         )}
       </div>
-      <div id="encours" style={{ border: '1px solid red' }}>
+      <div id="encours">
         {encours
           // bind encours to their facts
           .map((e) => ({

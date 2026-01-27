@@ -2,6 +2,8 @@ import { Router, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import { Interval } from '../helpers/interval';
 import { PrevisionAssembler } from './assembler/PrevisionAssembler';
+import { RuleAssembler } from './assembler/RuleAssembler';
+import { EchecanceAssembler } from './assembler/EcheanceAssembler';
 
 export const getRouterPrevisions = (): Router => {
   const router = Router();
@@ -20,7 +22,7 @@ export const getRouterPrevisions = (): Router => {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const rulesService = res.locals.factory.getRulesService();
       const rules = await rulesService.getAll();
-      res.status(200).send(rules);
+      res.status(200).send(RuleAssembler(rules));
     }),
   );
 
@@ -30,7 +32,7 @@ export const getRouterPrevisions = (): Router => {
       const interval = new Interval(new Date(req.params.start), new Date(req.params.end));
       const previsionService = res.locals.factory.getPrevisionsService();
       const echeances = await previsionService.getEcheancesInInterval(interval);
-      res.status(200).send(echeances);
+      res.status(200).send(EchecanceAssembler(echeances));
     }),
   );
 

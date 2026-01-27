@@ -10,6 +10,7 @@ import CategoryTreeSelect from '../Components/CategoryTreeSelect';
 import UploadControl from '../Components/UploadControl';
 import ReactModal from 'react-modal';
 import EditNote from '../Components/EditNote';
+import { Month } from '../exportable/Interval/Month';
 
 interface Props {}
 
@@ -38,13 +39,13 @@ const PageExtraits: FC<Props> = () => {
     }
   };
 
-  const changeDateRef = async (dateRef: string | undefined) => {
+  const changeDateRef = async (dateRef: Month | undefined) => {
     if (undefined === dateRef) {
       alert('ne sera pas assigné (corriger le bug)');
     } else {
       await extraitService.updateRefDate(
         selection.map((line) => line.id),
-        dateRef,
+        formatService.renderMonth(dateRef.getDate()),
       );
       retrieveExtraits(state.criteria);
       resetSelection();
@@ -60,7 +61,7 @@ const PageExtraits: FC<Props> = () => {
     dispatch({ type: 'setCriteria', data: { ...state.criteria, categoryId: value } });
   };
 
-  const handleChangeMonth = (value: string) => {
+  const handleChangeMonth = (value: Month) => {
     dispatch({ type: 'setCriteria', data: { ...state.criteria, month: value } });
   };
 
@@ -82,7 +83,7 @@ const PageExtraits: FC<Props> = () => {
   const [noteSelection, setNoteSelection] = useState<ExtraitLine | undefined>(undefined);
   const [extraits, setExtraits] = useState<ExtraitLine[]>([]);
   const [assignationCategoryId, setAssignationCategoryId] = useState<string | undefined>(undefined);
-  const [refMonth, setRefMonth] = useState<string | undefined>(undefined);
+  const [refMonth, setRefMonth] = useState<Month | undefined>(undefined);
   const [isOpenUpload, setIsOpenUpload] = useState<boolean>(false);
 
   const categoryService = factory.getCategoryService();
@@ -101,7 +102,7 @@ const PageExtraits: FC<Props> = () => {
     <div id="page-extraits">
       <div id="filter">
         <label>Mois&nbsp;:&nbsp;</label>
-        <MonthFormElement value={state.criteria.month} onChange={(e) => handleChangeMonth(e as string)} />
+        <MonthFormElement selected={state.criteria.month} changeAction={(e) => handleChangeMonth(e)} />
         <label>Catégorie&nbsp;:&nbsp;</label>
         <CategoryTreeSelect
           value={state.criteria.categoryId}
@@ -141,7 +142,7 @@ const PageExtraits: FC<Props> = () => {
             &nbsp;&nbsp;<button onClick={resetSelection}> Unselect </button>&nbsp;&nbsp; Assignation:
             <CategoryTreeSelect value={assignationCategoryId} onChange={(e) => setAssignationCategoryId(e)} />
             <button onClick={(e) => changeCategorie(assignationCategoryId)}> Assigner </button>
-            <MonthFormElement onChange={(e) => setRefMonth(e as string)} value={refMonth} />
+            <MonthFormElement changeAction={(e) => setRefMonth(e)} selected={refMonth} />
             <button onClick={() => changeDateRef(refMonth)}> Assigner </button>
           </div>
           <div id="selected-extrait">

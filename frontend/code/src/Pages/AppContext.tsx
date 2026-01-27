@@ -1,11 +1,12 @@
 import { FC, ReactNode, createContext, useEffect, useReducer } from 'react';
-import { Echeance, Encours, MonthData, PrevisionRules } from '../interfaces/extraits';
+import { Echeance, Encours, PrevisionRules } from '../interfaces/extraits';
 import factory from '../services/Factory';
 import { Tree, treeDerive, treeMap } from '../exportable/Hierarchie/Tree';
 import { camaieuDerivative } from '../helpers/categories';
+import { Month } from '../exportable/Interval/Month';
 
 interface AppState {
-  availableMonths: MonthData[];
+  availableMonths: Month[];
   availableCategories: Array<Tree<{ name: string }>>;
   categoryColors: Array<Tree<{ color: string }>>;
   previsionsRules: PrevisionRules[];

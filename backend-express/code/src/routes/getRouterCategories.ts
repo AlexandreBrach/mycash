@@ -1,6 +1,8 @@
 import { Request, Response, Router } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import { CreateCategoryDto, UpdateCategoryDto, MoveCategoryDto } from '../services/CategoryService/CategoryService';
+import { CategoryAssembler } from './assembler/CategoryAssembler';
+import { CategoryTreeAssembler } from './assembler/CategoryTreeAssembler';
 
 export const getRouterCategories = (): Router => {
   const router = Router();
@@ -11,7 +13,7 @@ export const getRouterCategories = (): Router => {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
       const categories = await categoryService.getAllCategories();
-      res.send(categories);
+      res.send(CategoryAssembler(categories));
     }),
   );
 
@@ -21,7 +23,7 @@ export const getRouterCategories = (): Router => {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
       const tree = await categoryService.getCategoryTree();
-      res.send(tree);
+      res.send(CategoryTreeAssembler(tree));
     }),
   );
 
@@ -38,7 +40,7 @@ export const getRouterCategories = (): Router => {
         return;
       }
 
-      res.send({ response: category });
+      res.send({ response: CategoryAssembler(category) });
     }),
   );
 
@@ -55,7 +57,7 @@ export const getRouterCategories = (): Router => {
       }
 
       const category = await categoryService.createCategory(dto);
-      res.status(201).send({ response: category });
+      res.status(201).send({ response: CategoryAssembler(category) });
     }),
   );
 
@@ -79,7 +81,7 @@ export const getRouterCategories = (): Router => {
         return;
       }
 
-      res.send({ response: category });
+      res.send({ response: CategoryAssembler(category) });
     }),
   );
 

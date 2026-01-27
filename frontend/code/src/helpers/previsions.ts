@@ -1,14 +1,14 @@
 import { FlatTree } from '../exportable/Hierarchie/Tree';
+import { Interval } from '../exportable/Interval/Interval';
+import { Month } from '../exportable/Interval/Month';
 import { Echeance, PrevisionRules } from '../interfaces/extraits';
 
 /**
  * Return the month when rule apply between two date
  *
  */
-export const getRuleApplicationMonth = (rule: PrevisionRules, dateStart: Date, dateEnd: Date): string[] => {
-  const getMonthsNumber = (d: Date) => d.getFullYear() * 12 + d.getMonth();
-
-  const result: string[] = [];
+export const getRuleApplicationMonth = (rule: PrevisionRules, dateStart: Month, dateEnd: Month): Month[] => {
+  const result: Month[] = [];
 
   const ruleEndDate = rule.end !== undefined ? rule.end : new Date('2100/2/1');
   if (rule.start > dateStart) {
@@ -16,19 +16,18 @@ export const getRuleApplicationMonth = (rule: PrevisionRules, dateStart: Date, d
   }
 
   // nombre de mois entre ruleStartDate et dateStart
-  const diff = getMonthsNumber(dateStart) - getMonthsNumber(rule.start);
-  const months = diff >= 0 ? diff : diff + 12;
+  const months = dateStart.diff(rule.start);
 
   const modulo = months % rule.period;
   // modulo period => si 0, firstDate = dateStart, sinon dateStart.addMonth( period-modulo )
-  const firstDate = new Date(dateStart);
+  const first = dateStart.clone();
   if (modulo !== 0) {
-    firstDate.setMonth(firstDate.getMonth() + rule.period - modulo);
+    first.setMonth(first.getDate().getUTCMonth() + rule.period - modulo);
   }
 
-  while (firstDate < dateEnd && firstDate <= ruleEndDate) {
-    result.push(`${firstDate.getFullYear()}-${firstDate.getMonth() + 1}`);
-    firstDate.setMonth(firstDate.getMonth() + rule.period);
+  while (first < dateEnd && first <= ruleEndDate) {
+    result.push(first.nextMonth());
+    first.setMonth(first.getDate().getUTCMonth() + rule.period);
   }
 
   return result;
@@ -50,16 +49,16 @@ export const rulesToEcheances = (
   startYear: number,
   length: number = 12,
 ): Echeance[] => {
-  const startDate = new Date(`${startYear}/${startMonth + 1}/1`);
+  const startDate = Month.fromMonthAndYear(startYear, startMonth);
+
   let response: Echeance[] = [];
 
-  const limitDate = new Date(`${startYear}/${startMonth + 1}/1`);
-  limitDate.setMonth(startDate.getMonth() + length);
+  const limitDate = startDate.nextMonth(length);
 
   rules.forEach((rule) => {
     response = [
       ...response,
-      ...getRuleApplicationMonth(rule, startDate, limitDate).map((month: string) => ({
+      ...getRuleApplicationMonth(rule, startDate, limitDate).map((month: Month) => ({
         date: month,
         categoryId: rule.categoryId,
         amount: rule.amount,
@@ -78,21 +77,18 @@ export const rulesToEcheances = (
  * @param year
  * @returns
  */
-export const getMonthPrevisionAmount = (rule: PrevisionRules, month: number, year: number): number => {
-  const months = month + year * 12;
-  const startMonths = rule.start.getMonth() + rule.start.getFullYear() * 12;
-
-  if (months < startMonths) {
+export const getMonthPrevisionAmount = (rule: PrevisionRules, month: Month): number => {
+  if (month.getDate() < rule.start.getDate()) {
     return 0;
   }
 
   if (rule.end) {
-    if (months > rule.end.getMonth() + rule.end.getFullYear() * 12) {
+    if (month.getDate() > rule.end.getDate()) {
       return 0;
     }
   }
-
-  return (month - startMonths) % rule.period === 0 ? rule.amount : 0;
+  const interval = new Interval(rule.start.getDate(), month.getDate());
+  return interval.countMonths() % rule.period === 0 ? rule.amount : 0;
 };
 
 /**
@@ -103,17 +99,13 @@ export const getMonthPrevisionAmount = (rule: PrevisionRules, month: number, yea
  * @param year
  * @returns
  */
-export const getMonthPrevisions = (
-  rules: PrevisionRules[],
-  month: number,
-  year: number,
-): FlatTree<{ value: number }> => {
+export const getMonthPrevisions = (rules: PrevisionRules[], month: Month): FlatTree<{ value: number }> => {
   return rules
     .map((rule) => {
       return {
         id: rule.categoryId,
         data: {
-          value: getMonthPrevisionAmount(rule, month, year),
+          value: getMonthPrevisionAmount(rule, month),
         },
       };
     })
@@ -131,12 +123,12 @@ export const getPrevisionsMonthTotal = (echeances: Echeance[]): Echeance[] => {
   // tmp will store the cumul for each month
   let tmp: Record<string, number> = {};
   echeances.forEach((e) => {
-    const index = `${e.date.split('-')[0]}-${parseInt(e.date.split('-')[1])}`;
+    const index = e.date.getDate().valueOf();
     return (tmp[index] = tmp[index] === undefined ? e.amount : (tmp[index] += e.amount));
   });
   return Object.keys(tmp).map(
     (date): Echeance => ({
-      date,
+      date: new Month(new Date(date)),
       categoryId: 'TOTAL',
       amount: tmp[date],
     }),

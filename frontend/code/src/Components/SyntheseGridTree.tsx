@@ -3,6 +3,7 @@ import './SyntheseGridTree.scss';
 import SyntheseLine from './SyntheseLine';
 import { AppContext } from '../Pages/AppContext';
 import { FlatTree } from '../exportable/Hierarchie/Tree';
+import { Month } from '../exportable/Interval/Month';
 
 interface Props {
   thead?: boolean;
@@ -11,7 +12,7 @@ interface Props {
   previsionsFacts: FlatTree<{ value: number }>;
   previsionDiffs: FlatTree<{ value: number }>;
   unexpectedFacts: FlatTree<{ value: number }>;
-  handleMontantClic: (category: string, month: string) => void;
+  handleMontantClic: (category: string, month: Month) => Promise<void>;
 }
 
 const SyntheseGridTree: FC<Props> = ({
