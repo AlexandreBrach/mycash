@@ -74,5 +74,17 @@ export const getRouterExtraits = (): Router => {
     }),
   );
 
+  router.post(
+    '/date-reference',
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const extraitService = res.locals.factory.getExtraitService();
+      const { ids, month } = req.body;
+      const parts = month.split('-').map((e: string) => parseInt(e));
+      const date = new Date(Date.UTC(parts[0], parts[1]) - 1);
+      await extraitService.assignDateRef(date, ids);
+      res.status(200).send(AckAssembler());
+    }),
+  );
+
   return router;
 };

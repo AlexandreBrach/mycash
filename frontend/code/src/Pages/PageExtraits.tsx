@@ -45,7 +45,7 @@ const PageExtraits: FC<Props> = () => {
     } else {
       await extraitService.updateRefDate(
         selection.map((line) => line.id),
-        formatService.renderMonth(dateRef.getDate()),
+        dateRef,
       );
       retrieveExtraits(state.criteria);
       resetSelection();

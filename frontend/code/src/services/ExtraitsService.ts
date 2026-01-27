@@ -4,7 +4,7 @@ import { BackendFacadeInterface } from './backendFacade';
 
 export interface ExtraitsServiceInterface {
   filterExtraits: (criteria: Criteria) => Promise<ExtraitLine[]>;
-  updateRefDate: (ids: string[], date: string) => Promise<void>;
+  updateRefDate: (ids: string[], date: Month) => Promise<void>;
   retrieveSynthese: () => Promise<TSynthese>;
   uploadExtraits: (selectedFile: File) => Promise<void>;
   updateNote: (id: string, note: string) => Promise<void>;
@@ -58,8 +58,8 @@ const ExtraitsService = (backend: BackendFacadeInterface): ExtraitsServiceInterf
    * update refdate
    *
    */
-  const updateRefDate = async (ids: string[], date: string): Promise<void> => {
-    await backend.post<any[]>('/extrait/date-reference', { ids, date });
+  const updateRefDate = async (ids: string[], month: Month): Promise<void> => {
+    await backend.post<any[]>('/extraits/date-reference', { ids, month: month.toString() });
   };
 
   /**

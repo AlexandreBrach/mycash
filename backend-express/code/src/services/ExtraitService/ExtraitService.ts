@@ -6,6 +6,7 @@ export interface ExtraitServiceInterface {
   getDistinctMonths: () => Promise<string[]>;
   getExtraitsByCategoryAndMonth: (p: { categoryId?: number; month?: string }) => Promise<Extrait[]>;
   assignCategory: (categoryId: number, extraitsId: number[]) => Promise<void>;
+  assignDateRef: (date: Date, extraitsId: number[]) => Promise<void>;
   injectCsv: (csvContent: string) => Promise<number>;
 }
 
@@ -43,6 +44,9 @@ export const ExtraitService = (extraitRepository: ExtraitRepositoryInterface): E
     },
     assignCategory: async (categoryId: number, extraitsIds: number[]) => {
       await extraitRepository.bulkUpdateById('categorie_id', categoryId, extraitsIds);
+    },
+    assignDateRef: async (date: Date, extraitsIds: number[]) => {
+      await extraitRepository.bulkUpdateById('categorie_month', date, extraitsIds);
     },
     injectCsv: async (csvContent: string) => {
       const lines = csvContent.trim().split('\n');
