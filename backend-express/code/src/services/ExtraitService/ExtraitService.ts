@@ -78,10 +78,8 @@ export const ExtraitService = (extraitRepository: ExtraitRepositoryInterface): E
             label: libelleSimplifie || libelleOperation,
             date_insertion: new Date(),
             unicity_flag: 0,
-            note: '',
+            note: libelleOperation,
           };
-
-          console.log(extrait);
 
           await extraitRepository.create(extrait);
           insertedCount++;
