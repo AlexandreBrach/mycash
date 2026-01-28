@@ -30,7 +30,7 @@ const CategorieService = (backend: BackendFacadeInterface): CategorieServiceInte
      *
      */
     create: async (name: string) => {
-      return await backend.post('/add-category/' + name, {});
+      return await backend.post('/categories/add/' + name, {});
     },
 
     /**

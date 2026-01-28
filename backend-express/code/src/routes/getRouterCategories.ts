@@ -44,6 +44,17 @@ export const getRouterCategories = (): Router => {
     }),
   );
 
+  // router.post(
+  //   '/add/:name',
+  //   expressAsyncHandler((req: Request, res: Response) => {
+  //     const categoryService = res.locals.factory.getCategoryService();
+  //     const name = req.params.name;
+  //     await categoryService.createCategory({ name });
+  //     console.log(name);
+  //     res.status(204).send();
+  //   }),
+  // );
+
   // POST /categories - Create a new category
   router.post(
     '/',
