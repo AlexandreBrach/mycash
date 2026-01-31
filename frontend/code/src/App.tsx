@@ -5,8 +5,8 @@ import PageCategories from './Pages/PageCategories';
 import PageSynthese from './Pages/PageSynthese';
 import CriteriaContextProvider from './Pages/CriteriaContext';
 import AppContextProvider from './Pages/AppContext';
-import PagePrevisions from './Pages/PagePrevisions';
 import PageConfiguration from './Pages/PageConfiguration';
+import { PagePrevisions } from './Pages/PagePrevisions';
 
 function App() {
   return (

@@ -24,7 +24,7 @@ const newRule: PrevisionRules = {
   end: undefined,
 };
 
-const PagePrevisions: FC = () => {
+export const PagePrevisions: FC = () => {
   const COLUMN_NUMBER = 8;
   const handleClickNewRules = () => {
     setSelected(newRule);
@@ -198,5 +198,3 @@ const PagePrevisions: FC = () => {
 
   return <Layout content={content} />;
 };
-
-export default PagePrevisions;

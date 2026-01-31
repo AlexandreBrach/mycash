@@ -61,13 +61,15 @@ const PrevisionTable: FC<Props> = ({ echeanceTable, startMonth, onChangeStartDat
       <tbody>
         {categoriesId.map((categoryId) => (
           <tr key={categoryId}>
-            <td>{flat.find((v) => v.id === categoryId)?.data?.name}</td>
+            <td>{flat.find((v) => v.id === categoryId)!.data.name}</td>
             {months.map((month: Month) => (
               <td key={`${categoryId}${month}`}>
                 {
                   <Montant
                     value={echeanceTable
-                      .filter((e) => e.categoryId === categoryId && e.date.getDate() === month.getDate())
+                      .filter(
+                        (e) => e.categoryId === categoryId && e.date.getDate().valueOf() === month.getDate().valueOf(),
+                      )
                       .reduce((p, c) => p + c.amount, 0)}
                   />
                 }

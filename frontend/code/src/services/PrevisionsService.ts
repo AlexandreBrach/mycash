@@ -37,7 +37,7 @@ const PrevisionsService = (backend: BackendFacadeInterface): PrevisionsServiceIn
   return {
     getRules: async (): Promise<PrevisionRules[]> => {
       const response = await backend.get<any[]>('/previsions/rules');
-      // convert Json-stringyfied float values
+
       return response.map((response) => ({
         ...response,
         amount: parseFloat(response.amount as string),
@@ -77,7 +77,6 @@ const PrevisionsService = (backend: BackendFacadeInterface): PrevisionsServiceIn
     getEcheancesInInterval: async (start: Month, months: number): Promise<Echeance[]> => {
       const end = start.nextMonth(months);
       const data = await backend.get<BackendEcheance[]>(`/previsions/echeances/${start.toString()}/${end.toString()}`);
-      console.log('data', data);
       return data.map((e) => ({ ...e, amount: parseFloat(e.amount), date: Month.fromString(e.date) }));
     },
     getAllPrevisions: async (): Promise<Echeance[]> => {
