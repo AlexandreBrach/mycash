@@ -26,7 +26,7 @@ import { Category } from '../infra/typeorm/category/category';
 export interface FactoryInterface {
   getApplicationStateService: () => ApplicationStateServiceInterface;
   getLoggerService: () => LoggerServiceInterface;
-  getPrevisionsService: () => PrevisionsServiceInterface; // Placeholder for future email service
+  getPrevisionsService: () => PrevisionsServiceInterface;
   getDebugService: () => DebugServiceInterface;
   getCategoryService: () => CategoryServiceInterface;
   getExtraitService: () => ExtraitServiceInterface;

@@ -10,7 +10,7 @@ export interface GenericRepositoryInterface<Entity extends CompteEntity> {
   findOne: (filter: FindManyOptions<Entity>) => Promise<Entity | null>;
   find: (filter: FindManyOptions<Entity>) => Promise<Entity[]>;
   create: (data: Omit<Entity, 'id'>) => Promise<void>;
-  update: (id: number, data: Partial<Entity>, create: boolean) => Promise<Entity>;
+  update: (id: number, data: Partial<Entity>) => Promise<Entity>;
   delete: (id: number) => Promise<void>;
   bulkUpdateById: <K extends keyof Entity>(propertyName: K, value: Entity[K], ids: number[]) => Promise<void>;
 }
@@ -32,7 +32,7 @@ export const GenericRepository = <Entity extends CompteEntity>(
     await repository.save(entity);
   };
 
-  const update = async (id: number, data: Partial<Entity>, create: boolean = true) => {
+  const update = async (id: number, data: Partial<Entity>) => {
     const entity = await repository.findOneBy({ id } as FindOptionsWhere<Entity>);
     if (!entity) {
       throw Error('Not found !');

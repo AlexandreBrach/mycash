@@ -46,7 +46,7 @@ const CategorieService = (backend: BackendFacadeInterface): CategorieServiceInte
      *
      */
     rename: async (id: string, newName: string) => {
-      return await backend.post('/rename-category/' + id + '/' + newName, {});
+      return await backend.post('/categories/rename/' + id + '/' + newName, {});
     },
 
     /**
@@ -58,7 +58,7 @@ const CategorieService = (backend: BackendFacadeInterface): CategorieServiceInte
     },
 
     updateColor: async (id: string, color: string) => {
-      const url = `/update-category-color/${id}/${color.substring(1)}`;
+      const url = `/categories/recolor/${id}/${color.substring(1)}`;
       await backend.post(url, {});
     },
   };

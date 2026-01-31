@@ -1,29 +1,58 @@
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { AppDataSource } from '../ormconfig';
 import { Category } from './category';
+import { GenericRepository, GenericRepositoryInterface } from '../GenericRepository';
 
-export interface CategoryRepositoryInterface {
+const CategoryOrmRepository = AppDataSource.getRepository(Category);
+
+export interface CategoryRepositoryInterface extends GenericRepositoryInterface<Category> {
   getAll: () => Promise<Category[]>;
   getById: (id: number) => Promise<Category | null>;
   getFlat: () => Promise<Category[]>;
   insert: (name: string, parentId?: number) => Promise<Category>;
-  update: (id: number, name: string) => Promise<Category | null>;
   deleteNode: (id: number) => Promise<void>;
   moveNode: (nodeId: number, newParentId: number) => Promise<void>;
 }
 
 export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepositoryInterface => {
-  return {
-    getAll: async () => {
-      return ormRepo.find({
-        order: { lft: 'ASC' },
-      });
-    },
+  const _insertAtRoot = async (name: string) => {
+    // Insert as root / new tree
+    const maxRght = await ormRepo.createQueryBuilder('c').select('MAX(c.rght)', 'max').getRawOne();
+    const maxTreeId = await ormRepo.createQueryBuilder('c').select('MAX(c.tree_id)', 'max').getRawOne();
 
-    getById: async (id: number) => {
-      return ormRepo.findOne({
-        where: { id },
-      });
+    const newLft = maxRght?.max ? maxRght.max + 1 : 1;
+    const category = ormRepo.create({
+      name,
+      lft: newLft,
+      rght: newLft + 1,
+      level: 0,
+      tree_id: maxTreeId ? maxTreeId.max + 1 : 1,
+    });
+
+    return ormRepo.save(category);
+  };
+
+  return {
+    ...GenericRepository(CategoryOrmRepository),
+
+    /**
+     * update the category, only for properties that are not used for Preorder Tree Traversal
+     *
+     * @param id
+     * @param data
+     * @param create
+     * @returns
+     */
+    update: async (id: number, data: Partial<Category>) => {
+      const { lft, rght, tree_id, level, parent_id, ...authorized } = data;
+
+      const entity = await ormRepo.findOneBy({ id } as FindOptionsWhere<Category>);
+      if (!entity) {
+        throw Error('Not found !');
+      }
+
+      Object.assign(entity, data);
+      return ormRepo.save(entity);
     },
 
     getFlat: async () => {
@@ -33,67 +62,42 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
     },
 
     insert: async (name: string, parentId?: number) => {
-      return AppDataSource.transaction(async (manager) => {
-        if (parentId) {
-          // Insert as child of parent
-          const parent = await manager.findOne(Category, {
-            where: { id: parentId },
-          });
+      if (parentId) {
+        // Insert as child of parent
+        const parent = await ormRepo.findOne({
+          where: { id: parentId },
+        });
 
-          if (!parent) {
-            throw new Error('Parent category not found');
-          }
-
-          // Update all nodes to the right
-          await manager
-            .createQueryBuilder()
-            .update(Category)
-            .set({ rght: () => 'rght + 2' })
-            .where('rght >= :parentRght', { parentRght: parent.rght })
-            .execute();
-
-          await manager
-            .createQueryBuilder()
-            .update(Category)
-            .set({ lft: () => 'lft + 2' })
-            .where('lft > :parentRght', { parentRght: parent.rght })
-            .execute();
-
-          // Insert new node
-          const category = manager.create(Category, {
-            name,
-            lft: parent.rght,
-            rght: parent.rght + 1,
-          });
-
-          return manager.save(category);
-        } else {
-          // Insert as root (or new tree)
-          const maxRght = await manager.createQueryBuilder(Category, 'c').select('MAX(c.rght)', 'max').getRawOne();
-
-          const newLft = maxRght?.max ? maxRght.max + 1 : 1;
-          const category = manager.create(Category, {
-            name,
-            lft: newLft,
-            rght: newLft + 1,
-          });
-
-          return manager.save(category);
+        if (!parent) {
+          throw new Error('Parent category not found');
         }
-      });
-    },
 
-    update: async (id: number, name: string) => {
-      const category = await ormRepo.findOne({
-        where: { id },
-      });
+        // Update all nodes to the right
+        await ormRepo
+          .createQueryBuilder()
+          .update(Category)
+          .set({ rght: () => 'rght + 2' })
+          .where('rght >= :parentRght', { parentRght: parent.rght })
+          .execute();
 
-      if (!category) {
-        return null;
+        await ormRepo
+          .createQueryBuilder()
+          .update(Category)
+          .set({ lft: () => 'lft + 2' })
+          .where('lft > :parentRght', { parentRght: parent.rght })
+          .execute();
+
+        // Insert new node
+        const category = ormRepo.create({
+          name,
+          lft: parent.rght,
+          rght: parent.rght + 1,
+        });
+
+        return ormRepo.save(category);
+      } else {
+        return await _insertAtRoot(name);
       }
-
-      category.name = name;
-      return ormRepo.save(category);
     },
 
     deleteNode: async (id: number) => {

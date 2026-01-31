@@ -2,11 +2,13 @@ import { CategoryRepositoryInterface } from '../../infra/typeorm/category/Catego
 import { Category } from '../../infra/typeorm/category/category';
 
 export interface CreateCategoryDto {
+  color?: string;
   name: string;
   parentId?: number;
 }
 
 export interface UpdateCategoryDto {
+  color: string;
   name: string;
 }
 
@@ -19,7 +21,7 @@ export interface CategoryServiceInterface {
   getCategoryById: (id: number) => Promise<Category | null>;
   getCategoryTree: () => Promise<CategoryTree>;
   createCategory: (dto: CreateCategoryDto) => Promise<Category>;
-  updateCategory: (id: number, dto: UpdateCategoryDto) => Promise<Category | null>;
+  updateCategory: (id: number, dto: Partial<UpdateCategoryDto>) => Promise<Category | null>;
   deleteCategory: (id: number) => Promise<void>;
   moveCategory: (id: number, dto: MoveCategoryDto) => Promise<void>;
 }
@@ -74,8 +76,8 @@ export const CategoryService = (categoryRepository: CategoryRepositoryInterface)
       return categoryRepository.insert(dto.name, dto.parentId);
     },
 
-    updateCategory: async (id: number, dto: UpdateCategoryDto) => {
-      return categoryRepository.update(id, dto.name);
+    updateCategory: async (id: number, dto: Partial<UpdateCategoryDto>) => {
+      return await categoryRepository.update(id, dto);
     },
 
     deleteCategory: async (id: number) => {

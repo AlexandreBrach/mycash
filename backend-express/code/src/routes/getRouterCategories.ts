@@ -3,6 +3,7 @@ import expressAsyncHandler from 'express-async-handler';
 import { CreateCategoryDto, UpdateCategoryDto, MoveCategoryDto } from '../services/CategoryService/CategoryService';
 import { CategoryAssembler } from './assembler/CategoryAssembler';
 import { CategoryTreeAssembler } from './assembler/CategoryTreeAssembler';
+import { AckAssembler } from './assembler/AckAssembler';
 
 export const getRouterCategories = (): Router => {
   const router = Router();
@@ -44,16 +45,39 @@ export const getRouterCategories = (): Router => {
     }),
   );
 
-  // router.post(
-  //   '/add/:name',
-  //   expressAsyncHandler((req: Request, res: Response) => {
-  //     const categoryService = res.locals.factory.getCategoryService();
-  //     const name = req.params.name;
-  //     await categoryService.createCategory({ name });
-  //     console.log(name);
-  //     res.status(204).send();
-  //   }),
-  // );
+  router.post(
+    '/add/:name',
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const categoryService = res.locals.factory.getCategoryService();
+      const name = req.params.name;
+      await categoryService.createCategory({ name });
+      res.send({ response: AckAssembler() });
+    }),
+  );
+
+  router.post(
+    '/recolor/:id/:color',
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const color = req.params.color;
+      const id = parseInt(req.params.id);
+      const categoryService = res.locals.factory.getCategoryService();
+      await categoryService.updateCategory(id, { color });
+
+      res.send({ response: AckAssembler() });
+    }),
+  );
+
+  router.post(
+    '/rename/:id/:name',
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const name = req.params.name;
+      const id = parseInt(req.params.id);
+      const categoryService = res.locals.factory.getCategoryService();
+      await categoryService.updateCategory(id, { name });
+
+      res.send({ response: AckAssembler() });
+    }),
+  );
 
   // POST /categories - Create a new category
   router.post(
