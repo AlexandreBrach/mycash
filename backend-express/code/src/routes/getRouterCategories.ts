@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import expressAsyncHandler from 'express-async-handler';
-import { CreateCategoryDto, UpdateCategoryDto, MoveCategoryDto } from '../services/CategoryService/CategoryService';
+import { CreateCategoryDto, UpdateCategoryDto } from '../services/CategoryService/CategoryService';
 import { CategoryAssembler } from './assembler/CategoryAssembler';
 import { CategoryTreeAssembler } from './assembler/CategoryTreeAssembler';
 import { AckAssembler } from './assembler/AckAssembler';
@@ -79,23 +79,6 @@ export const getRouterCategories = (): Router => {
     }),
   );
 
-  // POST /categories - Create a new category
-  router.post(
-    '/',
-    expressAsyncHandler(async (req: Request, res: Response) => {
-      const categoryService = res.locals.factory.getCategoryService();
-      const dto: CreateCategoryDto = req.body;
-
-      if (!dto.name) {
-        res.status(400).send({ error: 'Name is required' });
-        return;
-      }
-
-      const category = await categoryService.createCategory(dto);
-      res.status(201).send({ response: CategoryAssembler(category) });
-    }),
-  );
-
   // PUT /categories/:id - Update a category
   router.put(
     '/:id',
@@ -134,19 +117,31 @@ export const getRouterCategories = (): Router => {
 
   // POST /categories/:id/move - Move a category to a new parent
   router.post(
-    '/:id/move',
+    '/move/:id/:parent',
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
       const id = parseInt(req.params.id, 10);
-      const dto: MoveCategoryDto = req.body;
+      const parentId = parseInt(req.params.parent, 10);
 
-      if (!dto.newParentId) {
-        res.status(400).send({ error: 'newParentId is required' });
+      await categoryService.moveCategory(id, parentId);
+      res.send({ response: { message: 'Category moved successfully' } });
+    }),
+  );
+
+  // POST /categories - Create a new category
+  router.post(
+    '/',
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const categoryService = res.locals.factory.getCategoryService();
+      const dto: CreateCategoryDto = req.body;
+
+      if (!dto.name) {
+        res.status(400).send({ error: 'Name is required' });
         return;
       }
 
-      await categoryService.moveCategory(id, dto);
-      res.send({ response: { message: 'Category moved successfully' } });
+      const category = await categoryService.createCategory(dto);
+      res.status(201).send({ response: CategoryAssembler(category) });
     }),
   );
 

@@ -12,10 +12,6 @@ export interface UpdateCategoryDto {
   name: string;
 }
 
-export interface MoveCategoryDto {
-  newParentId: number;
-}
-
 export interface CategoryServiceInterface {
   getAllCategories: () => Promise<Category[]>;
   getCategoryById: (id: number) => Promise<Category | null>;
@@ -23,7 +19,7 @@ export interface CategoryServiceInterface {
   createCategory: (dto: CreateCategoryDto) => Promise<Category>;
   updateCategory: (id: number, dto: Partial<UpdateCategoryDto>) => Promise<Category | null>;
   deleteCategory: (id: number) => Promise<void>;
-  moveCategory: (id: number, dto: MoveCategoryDto) => Promise<void>;
+  moveCategory: (id: number, parentId: number) => Promise<void>;
 }
 
 export type CategoryTree = (Category & { children: CategoryTree })[];
@@ -84,8 +80,8 @@ export const CategoryService = (categoryRepository: CategoryRepositoryInterface)
       return categoryRepository.deleteNode(id);
     },
 
-    moveCategory: async (id: number, dto: MoveCategoryDto) => {
-      return categoryRepository.moveNode(id, dto.newParentId);
+    moveCategory: async (id: number, parentId: number) => {
+      return categoryRepository.moveNode(id, parentId);
     },
   };
 };

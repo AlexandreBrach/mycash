@@ -38,7 +38,7 @@ const CategorieService = (backend: BackendFacadeInterface): CategorieServiceInte
      *
      */
     move: async (id: string, ancestorId: string) => {
-      return await backend.post('/move-category/' + id + '/' + ancestorId, {});
+      return await backend.post('/categories/move/' + id + '/' + ancestorId, {});
     },
 
     /**

@@ -61,43 +61,8 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
       });
     },
 
-    insert: async (name: string, parentId?: number) => {
-      if (parentId) {
-        // Insert as child of parent
-        const parent = await ormRepo.findOne({
-          where: { id: parentId },
-        });
-
-        if (!parent) {
-          throw new Error('Parent category not found');
-        }
-
-        // Update all nodes to the right
-        await ormRepo
-          .createQueryBuilder()
-          .update(Category)
-          .set({ rght: () => 'rght + 2' })
-          .where('rght >= :parentRght', { parentRght: parent.rght })
-          .execute();
-
-        await ormRepo
-          .createQueryBuilder()
-          .update(Category)
-          .set({ lft: () => 'lft + 2' })
-          .where('lft > :parentRght', { parentRght: parent.rght })
-          .execute();
-
-        // Insert new node
-        const category = ormRepo.create({
-          name,
-          lft: parent.rght,
-          rght: parent.rght + 1,
-        });
-
-        return ormRepo.save(category);
-      } else {
-        return await _insertAtRoot(name);
-      }
+    insert: async (name: string) => {
+      return await _insertAtRoot(name);
     },
 
     deleteNode: async (id: number) => {
@@ -142,27 +107,167 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
 
     moveNode: async (nodeId: number, newParentId: number) => {
       await AppDataSource.transaction(async (manager) => {
+        // 1. Récupérer et valider les nœuds
         const node = await manager.findOne(Category, {
           where: { id: nodeId },
         });
-
         const newParent = await manager.findOne(Category, {
           where: { id: newParentId },
         });
 
-        if (!node || !newParent) {
-          throw new Error('Node or parent not found');
+        if (!node) {
+          throw new Error('Node not found');
+        }
+        if (!newParent) {
+          throw new Error('Parent not found');
         }
 
-        // Check if trying to move node into its own subtree
-        if (newParent.lft >= node.lft && newParent.rght <= node.rght) {
-          throw new Error('Cannot move node into its own subtree');
-        }
-
+        // 2. Calculer les variables
         const nodeWidth = node.rght - node.lft + 1;
+        const newPosition = newParent.rght;
+        const levelDiff = newParent.level + 1 - node.level;
+        const sourceTreeId = node.tree_id;
+        const destTreeId = newParent.tree_id;
 
-        // This is a simplified version - full implementation would be more complex
-        throw new Error('Move operation not yet fully implemented');
+        if (sourceTreeId === destTreeId) {
+          // CAS 1: Déplacement dans le même arbre
+
+          // Validation: empêcher le déplacement dans son propre sous-arbre
+          if (newParent.lft >= node.lft && newParent.rght <= node.rght) {
+            throw new Error('Cannot move node into its own subtree');
+          }
+
+          const movingRight = newPosition > node.rght;
+
+          // 3. Créer l'espace à la destination
+          await manager
+            .createQueryBuilder()
+            .update(Category)
+            .set({ lft: () => `lft + ${nodeWidth}` })
+            .where('lft >= :newPosition', { newPosition })
+            .andWhere('tree_id = :treeId', { treeId: sourceTreeId })
+            .execute();
+
+          await manager
+            .createQueryBuilder()
+            .update(Category)
+            .set({ rght: () => `rght + ${nodeWidth}` })
+            .where('rght >= :newPosition', { newPosition })
+            .andWhere('tree_id = :treeId', { treeId: sourceTreeId })
+            .execute();
+
+          // 4. Déplacer le sous-arbre
+          let currentLeft = node.lft;
+          let currentRight = node.rght;
+
+          if (!movingRight) {
+            // Le nœud a été décalé lors de la création d'espace
+            currentLeft += nodeWidth;
+            currentRight += nodeWidth;
+          }
+
+          const distance = newPosition - currentLeft;
+
+          await manager
+            .createQueryBuilder()
+            .update(Category)
+            .set({
+              lft: () => `lft + ${distance}`,
+              rght: () => `rght + ${distance}`,
+              level: () => `level + ${levelDiff}`,
+            })
+            .where('lft >= :currentLeft', { currentLeft })
+            .andWhere('rght <= :currentRight', { currentRight })
+            .andWhere('tree_id = :treeId', { treeId: sourceTreeId })
+            .execute();
+
+          // 5. Combler le trou à l'ancienne position
+          await manager
+            .createQueryBuilder()
+            .update(Category)
+            .set({ lft: () => `lft - ${nodeWidth}` })
+            .where('lft > :currentRight', { currentRight })
+            .andWhere('tree_id = :treeId', { treeId: sourceTreeId })
+            .execute();
+
+          await manager
+            .createQueryBuilder()
+            .update(Category)
+            .set({ rght: () => `rght - ${nodeWidth}` })
+            .where('rght > :currentRight', { currentRight })
+            .andWhere('tree_id = :treeId', { treeId: sourceTreeId })
+            .execute();
+        } else {
+          // CAS 2: Déplacement inter-arbres
+
+          // 3. Marquer le sous-arbre avec valeurs négatives temporaires
+          await manager
+            .createQueryBuilder()
+            .update(Category)
+            .set({
+              lft: () => '-lft',
+              rght: () => '-rght',
+            })
+            .where('lft >= :lft', { lft: node.lft })
+            .andWhere('rght <= :rght', { rght: node.rght })
+            .andWhere('tree_id = :sourceTreeId', { sourceTreeId })
+            .execute();
+
+          // 4. Combler le trou dans l'arbre source
+          await manager
+            .createQueryBuilder()
+            .update(Category)
+            .set({ lft: () => `lft - ${nodeWidth}` })
+            .where('lft > :rght', { rght: node.rght })
+            .andWhere('tree_id = :sourceTreeId', { sourceTreeId })
+            .execute();
+
+          await manager
+            .createQueryBuilder()
+            .update(Category)
+            .set({ rght: () => `rght - ${nodeWidth}` })
+            .where('rght > :rght', { rght: node.rght })
+            .andWhere('tree_id = :sourceTreeId', { sourceTreeId })
+            .execute();
+
+          // 5. Créer l'espace dans l'arbre destination
+          await manager
+            .createQueryBuilder()
+            .update(Category)
+            .set({ lft: () => `lft + ${nodeWidth}` })
+            .where('lft >= :newPosition', { newPosition })
+            .andWhere('tree_id = :destTreeId', { destTreeId })
+            .execute();
+
+          await manager
+            .createQueryBuilder()
+            .update(Category)
+            .set({ rght: () => `rght + ${nodeWidth}` })
+            .where('rght >= :newPosition', { newPosition })
+            .andWhere('tree_id = :destTreeId', { destTreeId })
+            .execute();
+
+          // 6. Insérer le sous-arbre dans l'arbre destination
+          await manager
+            .createQueryBuilder()
+            .update(Category)
+            .set({
+              lft: () => `ABS(lft) - ${node.lft} + ${newPosition}`,
+              rght: () => `ABS(rght) - ${node.lft} + ${newPosition}`,
+              level: () => `level + ${levelDiff}`,
+              tree_id: destTreeId,
+            })
+            .where('lft < 0')
+            .execute();
+        }
+
+        // 7. Mettre à jour le parent_id
+        await manager
+          .createQueryBuilder()
+          .update(Category)
+          .set({ parent_id: newParentId })
+          .where('id = :nodeId', { nodeId })
+          .execute();
       });
     },
   };

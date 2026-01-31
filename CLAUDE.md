@@ -1,15 +1,16 @@
+# Règles générales
+
 Ne jamais faire de commit.
 Ne pas formatter le code.
 Ignore le dossier `backend`
-Les erreurs ne sont jamais renvoyé en résultat : s'il y a une erreur ou quelque chose d'imprévu, on lance explicitement une exception.
 
 # Architecture
 
 ## Docker compose
 
-Conformement au fichier `docker-compose.yml` et au fichier `.env` :
+Conformement au fichier `docker-compose.yml` :
 
-- le backend est accessible via localhost:$APPLICATION_PORT
+- le backend est accessible via localhost:$APPLICATION_PORT (voir la valeur dans `.env`)
 - le backend est buildé automatiquement à chaque modification de code, inutile de relancer le serveur
 
 ## Database
@@ -18,13 +19,11 @@ Conformement au fichier `docker-compose.yml` et au fichier `.env` :
 
 ## Backend Express
 
-### Repositories
-
-- Utiliser `GenericRepository<T>` pour les entités TypeORM par défaut
-- Ne créer un repository spécifique que si des méthodes custom sont nécessaires
-- Pattern: `const service = Service(GenericRepository<Entity>(EntityOrmRepository))`
-
 # Règle de code
+
+## Génerales
+
+Les erreurs ne sont jamais renvoyé en résultat : s'il y a une erreur ou quelque chose d'imprévu, on lance explicitement une exception.
 
 ## Typescript
 
@@ -42,6 +41,12 @@ Conformement au fichier `docker-compose.yml` et au fichier `.env` :
 - les routers express sont instanciés par la fabrique `./backend-express/code/src/routes/RouteFactory.ts`
 - les middlewares express sont instanciés par la fabrique `./backend-express/code/src/middlewares/factoryMiddleware.ts`
 - les repository utilisent GenericRepository tant qu'il n'y a rien d'autre que du CRUD basique à effectuer.
+
+### Repositories
+
+- Utiliser `GenericRepository<T>` pour les entités TypeORM par défaut
+- Ne créer un repository spécifique que si des méthodes custom sont nécessaires
+- Pattern: `const service = Service(GenericRepository<Entity>(EntityOrmRepository))`
 
 **IMPORTANT** : Ne PAS créer de repository custom pour du CRUD basique. Utiliser `GenericRepository` tant qu'il n'y a que des opération
 s CRUD standards à effectuer.
@@ -64,3 +69,9 @@ Créer un repository custom UNIQUEMENT si :
 - Besoin de logique custom qui ne rentre pas dans le CRUD standard
 
 Voir ExtraitRepository.ts pour un exemple de repository custom.
+
+# Model
+
+## Categories
+
+Les catégories sont stockées sous formes d'arbre selon l'algorithme 'Nested set model'.
