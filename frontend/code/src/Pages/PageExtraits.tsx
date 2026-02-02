@@ -1,6 +1,5 @@
 import './PageExtraits.scss';
 import { FC, useContext, useEffect, useState } from 'react';
-import Bloclines from '../Components/BlocLines';
 import Layout from '../Layout';
 import { Criteria, ExtraitLine } from '../interfaces/extraits';
 import factory from '../services/Factory';
@@ -11,6 +10,7 @@ import UploadControl from '../Components/UploadControl';
 import ReactModal from 'react-modal';
 import EditNote from '../Components/EditNote';
 import { Month } from '../exportable/Interval/Month';
+import { BlocLines } from '../Components/BlocLines';
 
 interface Props {}
 
@@ -126,7 +126,7 @@ const PageExtraits: FC<Props> = () => {
         </div>
       </div>
       <div id="filtered-extrait" className={numberSelectedLines === 0 ? 'alone' : ''}>
-        <Bloclines
+        <BlocLines
           lines={extraits}
           selection={selection.map((line) => line.id)}
           onSelect={addSelection}
@@ -146,7 +146,7 @@ const PageExtraits: FC<Props> = () => {
             <button onClick={() => changeDateRef(refMonth)}> Assigner </button>
           </div>
           <div id="selected-extrait">
-            <Bloclines lines={selection} selection={[]} onSelect={removeSelection} unSelect={() => {}} />
+            <BlocLines lines={selection} selection={[]} onSelect={removeSelection} unSelect={() => {}} />
           </div>
         </>
       )}

@@ -1,73 +1,56 @@
-import { FindOptionsWhere, Repository } from 'typeorm';
 import { AppDataSource } from '../ormconfig';
-import { Category } from './category';
-import { GenericRepository, GenericRepositoryInterface } from '../GenericRepository';
+import { CategoryOrm } from './category';
+import { DAOInterface, GenericRepository, GenericRepositoryInterface } from '../GenericRepository';
+import { Category } from '../../../models/Category';
 
-const CategoryOrmRepository = AppDataSource.getRepository(Category);
-
-export interface CategoryRepositoryInterface extends GenericRepositoryInterface<Category> {
-  getAll: () => Promise<Category[]>;
-  getById: (id: number) => Promise<Category | null>;
-  getFlat: () => Promise<Category[]>;
-  insert: (name: string, parentId?: number) => Promise<Category>;
-  deleteNode: (id: number) => Promise<void>;
+export interface CategoryRepositoryInterface extends GenericRepositoryInterface<Category, CategoryOrm> {
+  simpleInsert: (name: string) => Promise<void>;
+  delete: (id: number) => Promise<void>;
   moveNode: (nodeId: number, newParentId: number) => Promise<void>;
 }
 
-export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepositoryInterface => {
+class CategoryDAO implements DAOInterface<CategoryOrm, Category> {
+  public assemble(o: CategoryOrm): Category {
+    const { tree_id, parent_id, ...all } = o;
+
+    return new Category({
+      ...all,
+      treeId: tree_id,
+      parentId: parent_id,
+    });
+  }
+}
+
+export const CategoryRepository = (): CategoryRepositoryInterface => {
+  const dao = new CategoryDAO();
+  const CategoryOrmRepository = AppDataSource.getRepository(CategoryOrm);
+  const generic = GenericRepository<Category, CategoryOrm>(CategoryOrmRepository, dao);
+
   const _insertAtRoot = async (name: string) => {
     // Insert as root / new tree
-    const maxRght = await ormRepo.createQueryBuilder('c').select('MAX(c.rght)', 'max').getRawOne();
-    const maxTreeId = await ormRepo.createQueryBuilder('c').select('MAX(c.tree_id)', 'max').getRawOne();
+    const maxRght = await CategoryOrmRepository.createQueryBuilder('c').select('MAX(c.rght)', 'max').getRawOne();
+    const maxTreeId = await CategoryOrmRepository.createQueryBuilder('c').select('MAX(c.tree_id)', 'max').getRawOne();
 
     const newLft = maxRght?.max ? maxRght.max + 1 : 1;
-    const category = ormRepo.create({
+    await generic.create({
       name,
       lft: newLft,
       rght: newLft + 1,
       level: 0,
       tree_id: maxTreeId ? maxTreeId.max + 1 : 1,
     });
-
-    return ormRepo.save(category);
   };
 
   return {
-    ...GenericRepository(CategoryOrmRepository),
+    ...generic,
 
-    /**
-     * update the category, only for properties that are not used for Preorder Tree Traversal
-     *
-     * @param id
-     * @param data
-     * @param create
-     * @returns
-     */
-    update: async (id: number, data: Partial<Category>) => {
-      const { lft, rght, tree_id, level, parent_id, ...authorized } = data;
-
-      const entity = await ormRepo.findOneBy({ id } as FindOptionsWhere<Category>);
-      if (!entity) {
-        throw Error('Not found !');
-      }
-
-      Object.assign(entity, data);
-      return ormRepo.save(entity);
-    },
-
-    getFlat: async () => {
-      return await ormRepo.find({
-        order: { lft: 'ASC' },
-      });
-    },
-
-    insert: async (name: string) => {
+    simpleInsert: async (name: string) => {
       return await _insertAtRoot(name);
     },
 
-    deleteNode: async (id: number) => {
+    delete: async (id: number) => {
       await AppDataSource.transaction(async (manager) => {
-        const node = await manager.findOne(Category, {
+        const node = await manager.findOne(CategoryOrm, {
           where: { id },
         });
 
@@ -81,7 +64,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
         await manager
           .createQueryBuilder()
           .delete()
-          .from(Category)
+          .from(CategoryOrm)
           .where('lft >= :lft AND rght <= :rght', {
             lft: node.lft,
             rght: node.rght,
@@ -91,14 +74,14 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
         // Update remaining nodes
         await manager
           .createQueryBuilder()
-          .update(Category)
+          .update(CategoryOrm)
           .set({ lft: () => `lft - ${width}` })
           .where('lft > :rght', { rght: node.rght })
           .execute();
 
         await manager
           .createQueryBuilder()
-          .update(Category)
+          .update(CategoryOrm)
           .set({ rght: () => `rght - ${width}` })
           .where('rght > :rght', { rght: node.rght })
           .execute();
@@ -108,10 +91,10 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
     moveNode: async (nodeId: number, newParentId: number) => {
       await AppDataSource.transaction(async (manager) => {
         // 1. Récupérer et valider les nœuds
-        const node = await manager.findOne(Category, {
+        const node = await manager.findOne(CategoryOrm, {
           where: { id: nodeId },
         });
-        const newParent = await manager.findOne(Category, {
+        const newParent = await manager.findOne(CategoryOrm, {
           where: { id: newParentId },
         });
 
@@ -142,7 +125,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
           // 3. Créer l'espace à la destination
           await manager
             .createQueryBuilder()
-            .update(Category)
+            .update(CategoryOrm)
             .set({ lft: () => `lft + ${nodeWidth}` })
             .where('lft >= :newPosition', { newPosition })
             .andWhere('tree_id = :treeId', { treeId: sourceTreeId })
@@ -150,7 +133,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
 
           await manager
             .createQueryBuilder()
-            .update(Category)
+            .update(CategoryOrm)
             .set({ rght: () => `rght + ${nodeWidth}` })
             .where('rght >= :newPosition', { newPosition })
             .andWhere('tree_id = :treeId', { treeId: sourceTreeId })
@@ -170,7 +153,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
 
           await manager
             .createQueryBuilder()
-            .update(Category)
+            .update(CategoryOrm)
             .set({
               lft: () => `lft + ${distance}`,
               rght: () => `rght + ${distance}`,
@@ -184,7 +167,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
           // 5. Combler le trou à l'ancienne position
           await manager
             .createQueryBuilder()
-            .update(Category)
+            .update(CategoryOrm)
             .set({ lft: () => `lft - ${nodeWidth}` })
             .where('lft > :currentRight', { currentRight })
             .andWhere('tree_id = :treeId', { treeId: sourceTreeId })
@@ -192,7 +175,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
 
           await manager
             .createQueryBuilder()
-            .update(Category)
+            .update(CategoryOrm)
             .set({ rght: () => `rght - ${nodeWidth}` })
             .where('rght > :currentRight', { currentRight })
             .andWhere('tree_id = :treeId', { treeId: sourceTreeId })
@@ -203,7 +186,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
           // 3. Marquer le sous-arbre avec valeurs négatives temporaires
           await manager
             .createQueryBuilder()
-            .update(Category)
+            .update(CategoryOrm)
             .set({
               lft: () => '-lft',
               rght: () => '-rght',
@@ -216,7 +199,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
           // 4. Combler le trou dans l'arbre source
           await manager
             .createQueryBuilder()
-            .update(Category)
+            .update(CategoryOrm)
             .set({ lft: () => `lft - ${nodeWidth}` })
             .where('lft > :rght', { rght: node.rght })
             .andWhere('tree_id = :sourceTreeId', { sourceTreeId })
@@ -224,7 +207,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
 
           await manager
             .createQueryBuilder()
-            .update(Category)
+            .update(CategoryOrm)
             .set({ rght: () => `rght - ${nodeWidth}` })
             .where('rght > :rght', { rght: node.rght })
             .andWhere('tree_id = :sourceTreeId', { sourceTreeId })
@@ -233,7 +216,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
           // 5. Créer l'espace dans l'arbre destination
           await manager
             .createQueryBuilder()
-            .update(Category)
+            .update(CategoryOrm)
             .set({ lft: () => `lft + ${nodeWidth}` })
             .where('lft >= :newPosition', { newPosition })
             .andWhere('tree_id = :destTreeId', { destTreeId })
@@ -241,7 +224,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
 
           await manager
             .createQueryBuilder()
-            .update(Category)
+            .update(CategoryOrm)
             .set({ rght: () => `rght + ${nodeWidth}` })
             .where('rght >= :newPosition', { newPosition })
             .andWhere('tree_id = :destTreeId', { destTreeId })
@@ -250,7 +233,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
           // 6. Insérer le sous-arbre dans l'arbre destination
           await manager
             .createQueryBuilder()
-            .update(Category)
+            .update(CategoryOrm)
             .set({
               lft: () => `ABS(lft) - ${node.lft} + ${newPosition}`,
               rght: () => `ABS(rght) - ${node.lft} + ${newPosition}`,
@@ -264,7 +247,7 @@ export const CategoryRepository = (ormRepo: Repository<Category>): CategoryRepos
         // 7. Mettre à jour le parent_id
         await manager
           .createQueryBuilder()
-          .update(Category)
+          .update(CategoryOrm)
           .set({ parent_id: newParentId })
           .where('id = :nodeId', { nodeId })
           .execute();

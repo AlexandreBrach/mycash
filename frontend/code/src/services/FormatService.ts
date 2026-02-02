@@ -36,7 +36,7 @@ const FormatService = function (): FormatServiceInterface {
   };
 
   const renderMonth = (date: Date | null): string => {
-    if (null === date) {
+    if (!date) {
       return '';
     }
     let format = date

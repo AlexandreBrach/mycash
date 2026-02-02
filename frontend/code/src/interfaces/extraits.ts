@@ -5,9 +5,8 @@ export interface ExtraitLine {
   date: Date;
   label: string;
   montant: number;
-  categorie: string;
-  categorie_name: string;
-  categorie_month: Date | null;
+  categoryId: string;
+  categoryMonth: Date | null;
   note: string;
 }
 

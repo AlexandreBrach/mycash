@@ -15,7 +15,7 @@ interface Props {
   onNoteSelect?: (id: string) => void;
 }
 
-const BlocLines: FC<Props> = ({ lines, unSelect, onSelect, selection, onNoteSelect = undefined }) => {
+export const BlocLines: FC<Props> = ({ lines, unSelect, onSelect, selection, onNoteSelect = undefined }) => {
   const toogleLineSelection = (id: string) => {
     if (selection.indexOf(id) !== -1) {
       unSelect(id);
@@ -53,8 +53,8 @@ const BlocLines: FC<Props> = ({ lines, unSelect, onSelect, selection, onNoteSele
   const [sortOrder, setSortOrder] = useState<number>(-1);
 
   const { state } = useContext(AppContext);
-
   const colors = treeFlatten(state.categoryColors);
+  const categories = treeFlatten(state.availableCategories);
 
   return (
     colors && (
@@ -62,7 +62,7 @@ const BlocLines: FC<Props> = ({ lines, unSelect, onSelect, selection, onNoteSele
         <thead key="thead">
           <tr>
             <th onClick={() => sortBy('date')}>Date opération {sortIcon('date')} </th>
-            <th onClick={() => sortBy('categorie_name')}>Catégorie {sortIcon('categorie_name')}</th>
+            <th onClick={() => sortBy('categoryId')}>Catégorie {sortIcon('categoryId')}</th>
             <th onClick={() => sortBy('label')}>Label {sortIcon('label')}</th>
             <th onClick={() => sortBy('montant')}>Montant {sortIcon('montant')}</th>
             <th>Mois réferent</th>
@@ -75,7 +75,7 @@ const BlocLines: FC<Props> = ({ lines, unSelect, onSelect, selection, onNoteSele
             )
             .map((item) => {
               // @TODO : == instead of === because object key seems to cast to number
-              const colorItem = colors.find((c) => c.id == item.categorie);
+              const colorItem = colors.find((c) => c.id == item.categoryId);
               return (
                 <tr
                   key={item.id}
@@ -84,7 +84,9 @@ const BlocLines: FC<Props> = ({ lines, unSelect, onSelect, selection, onNoteSele
                   style={{ color: colorItem ? colorItem.data.color : '#AAAAAA' }}
                 >
                   <td>{formatService.renderDateOperation(item.date)}</td>
-                  <td className="category">{item.categorie_name}</td>
+                  <td className="category">
+                    {item.categoryId ? categories.find((c) => item.categoryId === c.id)?.data.name : ''}
+                  </td>
                   <td>
                     {item.label}
                     <div
@@ -99,7 +101,7 @@ const BlocLines: FC<Props> = ({ lines, unSelect, onSelect, selection, onNoteSele
                     </div>
                   </td>
                   <td className="montant">{formatService.renderMontant(item.montant)}&nbsp;&euro;</td>
-                  <td>{formatService.renderMonth(item.categorie_month)}</td>
+                  <td>{formatService.renderMonth(item.categoryMonth)}</td>
                 </tr>
               );
             })}
@@ -108,5 +110,3 @@ const BlocLines: FC<Props> = ({ lines, unSelect, onSelect, selection, onNoteSele
     )
   );
 };
-
-export default BlocLines;

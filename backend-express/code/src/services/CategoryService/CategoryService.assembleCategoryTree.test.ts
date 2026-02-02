@@ -1,9 +1,9 @@
-import { Category } from '../../infra/typeorm/category/category';
+import { Category, CategoryProperties } from '../../models/Category';
 import { assembleCategoryTree } from './CategoryService';
 const fs = require('fs');
 
-const data: Category[] = JSON.parse(fs.readFileSync('./src/services/CategoryService/tests-assets/flat.json'));
+const data: CategoryProperties[] = JSON.parse(fs.readFileSync('./src/services/CategoryService/tests-assets/flat.json'));
 
 it('tree to options', () => {
-  const result = assembleCategoryTree(data);
+  const result = assembleCategoryTree(data.map((d) => new Category(d)));
 });

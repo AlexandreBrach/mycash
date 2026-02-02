@@ -1,31 +1,35 @@
 import { FindManyOptions } from 'typeorm';
 import { AppDataSource } from '../ormconfig';
-import { Extrait } from './extrait';
-import { GenericRepository, GenericRepositoryInterface } from '../GenericRepository';
+import { ExtraitOrm } from './extrait';
+import { DAOInterface, GenericRepository, GenericRepositoryInterface } from '../GenericRepository';
+import { Extrait } from '../../../models/Extrait';
 
-const ExtraitOrmRepository = AppDataSource.getRepository(Extrait);
-export type ExtraitFilter = FindManyOptions<Extrait>;
+const ExtraitOrmRepository = AppDataSource.getRepository(ExtraitOrm);
+export type ExtraitFilter = FindManyOptions<ExtraitOrm>;
 
-export interface ExtraitRepositoryInterface extends GenericRepositoryInterface<Extrait> {
+export interface ExtraitRepositoryInterface extends GenericRepositoryInterface<Extrait, ExtraitOrm> {
   getDistinctMonths: () => Promise<string[]>;
 }
 
-export const ExtraitRepository = (): ExtraitRepositoryInterface => {
-  return {
-    ...GenericRepository(ExtraitOrmRepository),
-    getAll: async () => {
-      return ExtraitOrmRepository.find({
-        relations: ['categorie'],
-        order: { date: 'DESC' },
-      });
-    },
+class ExtraitDAO implements DAOInterface<ExtraitOrm, Extrait> {
+  public assemble(o: ExtraitOrm) {
+    const { categorie_id, unicity_flag, date_insertion, categorie_month, ...all } = o;
 
-    getById: async (id: number) => {
-      return ExtraitOrmRepository.findOne({
-        where: { id },
-        relations: ['categorie'],
-      });
-    },
+    return new Extrait({
+      ...all,
+      categoryId: categorie_id,
+      unicityFlag: unicity_flag,
+      dateInsertion: date_insertion,
+      categoryMonth: categorie_month,
+    });
+  }
+}
+
+export const ExtraitRepository = (): ExtraitRepositoryInterface => {
+  const dao = new ExtraitDAO();
+  const generic = GenericRepository<Extrait, ExtraitOrm>(AppDataSource.getRepository(ExtraitOrm), dao);
+  return {
+    ...generic,
 
     getDistinctMonths: async () => {
       const results = await ExtraitOrmRepository.createQueryBuilder('extrait')

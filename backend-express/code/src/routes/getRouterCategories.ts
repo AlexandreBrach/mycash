@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import expressAsyncHandler from 'express-async-handler';
-import { CreateCategoryDto, UpdateCategoryDto } from '../services/CategoryService/CategoryService';
+import { UpdateCategoryDto } from '../services/CategoryService/CategoryService';
 import { CategoryAssembler } from './assembler/CategoryAssembler';
 import { CategoryTreeAssembler } from './assembler/CategoryTreeAssembler';
 import { AckAssembler } from './assembler/AckAssembler';
@@ -50,7 +50,7 @@ export const getRouterCategories = (): Router => {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
       const name = req.params.name;
-      await categoryService.createCategory({ name });
+      await categoryService.createCategory(name);
       res.send({ response: AckAssembler() });
     }),
   );
@@ -111,7 +111,7 @@ export const getRouterCategories = (): Router => {
       const id = parseInt(req.params.id, 10);
 
       await categoryService.deleteCategory(id);
-      res.status(204).send();
+      res.status(200).send();
     }),
   );
 
@@ -133,15 +133,15 @@ export const getRouterCategories = (): Router => {
     '/',
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
-      const dto: CreateCategoryDto = req.body;
+      const { name } = req.body;
 
-      if (!dto.name) {
+      if (!name) {
         res.status(400).send({ error: 'Name is required' });
         return;
       }
 
-      const category = await categoryService.createCategory(dto);
-      res.status(201).send({ response: CategoryAssembler(category) });
+      await categoryService.createCategory(name);
+      res.status(200).send({ response: AckAssembler() });
     }),
   );
 

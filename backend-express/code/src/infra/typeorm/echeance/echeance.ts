@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Category } from '../category/category';
+import { CategoryOrm } from '../category/category';
 
 @Entity('comptes_echeance')
-export class Echeance {
+export class EcheanceOrm {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -10,7 +10,7 @@ export class Echeance {
   due_date!: Date;
 
   @Column({ type: 'decimal', precision: 9, scale: 2, nullable: false })
-  amount!: string;
+  amount!: number;
 
   @Column({ type: 'boolean', default: false })
   override!: boolean;
@@ -18,9 +18,9 @@ export class Echeance {
   @Column({ type: 'int', nullable: true })
   collection!: number | null;
 
-  @ManyToOne(() => Category, { nullable: true })
+  @ManyToOne(() => CategoryOrm, { nullable: true })
   @JoinColumn({ name: 'categorie_id' })
-  categorie!: Category;
+  categorie!: CategoryOrm;
 
   @Column({ type: 'int', nullable: true })
   categorie_id!: number;

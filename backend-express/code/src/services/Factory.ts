@@ -4,24 +4,19 @@ import { LoggerServiceInterface } from './Logger/interface';
 import { PrevisionsService, PrevisionsServiceInterface } from './PrevisionsService/PrevisionsService';
 import { ApplicationConfig } from '../config';
 import { DebugService, DebugServiceInterface } from './Miscellanious/InputVerboseService';
-import { GenericRepository } from '../infra/typeorm/GenericRepository';
-import { RulesOrmRepository } from '../infra/typeorm/rules/RuleRepository';
-import { Rules } from '../infra/typeorm/rules/rules';
+import { RulesRepository } from '../infra/typeorm/rules/RuleRepository';
 import { CategoryService, CategoryServiceInterface } from './CategoryService/CategoryService';
 import { CategoryRepository } from '../infra/typeorm/category/CategoryRepository';
 import { ExtraitService, ExtraitServiceInterface } from './ExtraitService/ExtraitService';
 import { ExtraitRepository } from '../infra/typeorm/extrait/ExtraitRepository';
 import { EncoursService, EncoursServiceInterface } from './EncoursService/EncoursService';
-import { EncoursOrmRepository } from '../infra/typeorm/encours/EncoursRepository';
-import { Encours } from '../infra/typeorm/encours/encours';
-import { PrevisionOrmRepository } from '../infra/typeorm/prevision/PrevisionRepository';
-import { Prevision } from '../infra/typeorm/prevision/prevision';
+import { EncoursRepository } from '../infra/typeorm/encours/EncoursRepository';
 import { RulesService, RulesServiceInterface } from './RulesService/RulesService';
 import { SyntheseService, SyntheseServiceInterface } from './SyntheseService/SyntheseService';
 import { SyntheseRepository } from '../infra/typeorm/synthese/SyntheseRepository';
 import { EcheanceRepository } from '../infra/typeorm/echeance/EcheanceRepository';
 import { AppDataSource } from '../infra/typeorm/ormconfig';
-import { Category } from '../infra/typeorm/category/category';
+import { CategoryOrm } from '../infra/typeorm/category/category';
 
 export interface FactoryInterface {
   getApplicationStateService: () => ApplicationStateServiceInterface;
@@ -41,14 +36,17 @@ export const Factory = (): FactoryInterface => {
   const debugService = DebugService(config.DEBUG_HTTP, logger);
   const echeanceRepository = EcheanceRepository();
   const applicationStateService = ApplicationStateService();
-  const previsionsService = PrevisionsService(GenericRepository<Prevision>(PrevisionOrmRepository), echeanceRepository);
-  const categoryRepository = CategoryRepository(AppDataSource.getRepository(Category));
+  const ruleRepository = RulesRepository();
+  const encoursRepository = EncoursRepository();
+  const rulesService = RulesService(ruleRepository);
+
+  const categoryRepository = CategoryRepository();
   const categoryService = CategoryService(categoryRepository);
   const extraitService = ExtraitService(ExtraitRepository());
-  const encoursService = EncoursService(GenericRepository<Encours>(EncoursOrmRepository));
-  const rulesService = RulesService(GenericRepository<Rules>(RulesOrmRepository));
-  const syntheseService = SyntheseService(SyntheseRepository());
+  const encoursService = EncoursService(encoursRepository);
 
+  const syntheseService = SyntheseService(SyntheseRepository());
+  const previsionsService = PrevisionsService(echeanceRepository, rulesService);
   return {
     getApplicationStateService: () => applicationStateService,
     getLoggerService: (): LoggerServiceInterface => {

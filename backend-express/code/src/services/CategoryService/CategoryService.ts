@@ -1,11 +1,5 @@
 import { CategoryRepositoryInterface } from '../../infra/typeorm/category/CategoryRepository';
-import { Category } from '../../infra/typeorm/category/category';
-
-export interface CreateCategoryDto {
-  color?: string;
-  name: string;
-  parentId?: number;
-}
+import { Category } from '../../models/Category';
 
 export interface UpdateCategoryDto {
   color: string;
@@ -16,31 +10,35 @@ export interface CategoryServiceInterface {
   getAllCategories: () => Promise<Category[]>;
   getCategoryById: (id: number) => Promise<Category | null>;
   getCategoryTree: () => Promise<CategoryTree>;
-  createCategory: (dto: CreateCategoryDto) => Promise<Category>;
+  createCategory: (name: string) => Promise<void>;
   updateCategory: (id: number, dto: Partial<UpdateCategoryDto>) => Promise<Category | null>;
   deleteCategory: (id: number) => Promise<void>;
   moveCategory: (id: number, parentId: number) => Promise<void>;
 }
 
-export type CategoryTree = (Category & { children: CategoryTree })[];
+export type CategoryTree = { category: Category; children: CategoryTree }[];
 
 export const assembleCategoryTree = (data: Category[]): CategoryTree => {
   // Build tree structure
-  const categoryMap = new Map<number, Category & { children: (Category & { children: CategoryTree })[] }>();
+  const categoryMap = new Map<
+    number,
+    { category: Category; children: { category: Category; children: CategoryTree }[] }
+  >();
   const roots: CategoryTree = [];
 
   // First pass: create map with children arrays
   data.forEach((cat) => {
-    categoryMap.set(cat.id, { ...cat, children: [] });
+    categoryMap.set(cat.raw().id, { category: cat, children: [] });
   });
 
   // Second pass: build tree
   data.forEach((cat) => {
-    const node = categoryMap.get(cat.id)!;
-    if (cat.parent_id === null || cat.parent_id === undefined) {
+    const p = cat.raw();
+    const node = categoryMap.get(p.id)!;
+    if (p.parentId === null || p.parentId === undefined) {
       roots.push(node);
     } else {
-      const parent = categoryMap.get(cat.parent_id);
+      const parent = categoryMap.get(p.parentId);
       if (parent) {
         parent.children.push(node);
       } else {
@@ -64,12 +62,12 @@ export const CategoryService = (categoryRepository: CategoryRepositoryInterface)
     },
 
     getCategoryTree: async () => {
-      const flat = await categoryRepository.getFlat();
+      const flat = await categoryRepository.getAll();
       return assembleCategoryTree(flat);
     },
 
-    createCategory: async (dto: CreateCategoryDto) => {
-      return categoryRepository.insert(dto.name, dto.parentId);
+    createCategory: async (name: string) => {
+      return categoryRepository.simpleInsert(name);
     },
 
     updateCategory: async (id: number, dto: Partial<UpdateCategoryDto>) => {
@@ -77,7 +75,7 @@ export const CategoryService = (categoryRepository: CategoryRepositoryInterface)
     },
 
     deleteCategory: async (id: number) => {
-      return categoryRepository.deleteNode(id);
+      return categoryRepository.delete(id);
     },
 
     moveCategory: async (id: number, parentId: number) => {

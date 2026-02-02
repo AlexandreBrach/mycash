@@ -1,10 +1,10 @@
-import { Echeance } from '../../infra/typeorm/echeance/echeance';
+import { Echeance } from '../../models/Echeance';
 
-export const EchecanceAssembler = (p: Echeance | Echeance[]): any => {
+export const EcheanceAssembler = (p: Echeance | Echeance[]): any => {
   if (Array.isArray(p)) {
-    return p.map(EchecanceAssembler);
+    return p.map(EcheanceAssembler);
   }
-  const { id, categorie_id, due_date, ...other } = p;
+  const { id, categorie_id, due_date, ...other } = p.raw();
   return {
     ...other,
     categoryId: categorie_id.toString(),

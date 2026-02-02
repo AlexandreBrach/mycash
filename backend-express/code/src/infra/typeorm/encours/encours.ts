@@ -1,14 +1,14 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Category } from '../category/category';
+import { CategoryOrm } from '../category/category';
 
 @Entity('comptes_encours')
-export class Encours {
+export class EncoursOrm {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(() => Category, { nullable: true })
+  @ManyToOne(() => CategoryOrm, { nullable: true })
   @JoinColumn({ name: 'categorie_id' })
-  categorie?: Category;
+  categorie?: CategoryOrm;
 
   @Column({ type: 'int', nullable: true })
   categorie_id?: number;

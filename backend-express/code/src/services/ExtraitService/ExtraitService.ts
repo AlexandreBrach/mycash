@@ -1,6 +1,7 @@
-import { Extrait } from '../../infra/typeorm/extrait/extrait';
+import { ExtraitOrm } from '../../infra/typeorm/extrait/extrait';
 import { ExtraitRepositoryInterface } from '../../infra/typeorm/extrait/ExtraitRepository';
 import { FindManyOptions, Raw } from 'typeorm';
+import { Extrait } from '../../models/Extrait';
 
 export interface ExtraitServiceInterface {
   getDistinctMonths: () => Promise<string[]>;
@@ -31,12 +32,11 @@ export const ExtraitService = (extraitRepository: ExtraitRepositoryInterface): E
       return extraitRepository.getDistinctMonths();
     },
     getExtraitsByCategoryAndMonth: async ({ categoryId, month }) => {
-      const options: FindManyOptions<Extrait> = {
+      const options: FindManyOptions<ExtraitOrm> = {
         where: {
           categorie_id: categoryId,
           date: Raw((alias) => `TO_CHAR(${alias}, 'YYYY-MM') = :month`, { month }),
         },
-        relations: ['categorie'],
         order: { date: 'DESC' },
       };
 
@@ -76,7 +76,7 @@ export const ExtraitService = (extraitRepository: ExtraitRepositoryInterface): E
         const dateOperation = columns[10];
 
         try {
-          const extrait: Omit<Extrait, 'id'> = {
+          const extrait: Omit<ExtraitOrm, 'id'> = {
             date: parseDateFR(dateComptabilisation),
             montant: parseMontant(debit, credit),
             label: libelleSimplifie || libelleOperation,

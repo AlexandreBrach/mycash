@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Category } from '../category/category';
+import { CategoryOrm } from '../category/category';
 
 @Entity('comptes_extrait')
-export class Extrait {
+export class ExtraitOrm {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -12,9 +12,9 @@ export class Extrait {
   @Column({ type: 'decimal', precision: 9, scale: 2 })
   montant!: number;
 
-  @ManyToOne(() => Category, { nullable: true })
+  @ManyToOne(() => CategoryOrm, { nullable: true })
   @JoinColumn({ name: 'categorie_id' })
-  categorie?: Category;
+  categorie?: CategoryOrm;
 
   @Column({ type: 'int', nullable: true })
   categorie_id?: number;
@@ -34,6 +34,6 @@ export class Extrait {
   @Column({ type: 'varchar', length: 255, nullable: false })
   note!: string;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   categorie_month?: Date;
 }

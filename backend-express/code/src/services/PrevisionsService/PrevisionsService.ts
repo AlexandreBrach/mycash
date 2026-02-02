@@ -1,22 +1,27 @@
-import { Interval } from '../../helpers/interval';
-import { Echeance } from '../../infra/typeorm/echeance/echeance';
+import { Interval } from '../../exportable/Interval/Interval';
+import { Month } from '../../exportable/Interval/Month';
 import { EcheanceRepositoryInterface } from '../../infra/typeorm/echeance/EcheanceRepository';
-import { GenericRepositoryInterface } from '../../infra/typeorm/GenericRepository';
-import { Prevision } from '../../infra/typeorm/prevision/prevision';
+import { Prevision } from '../../models/Prevision';
+import { Echeance } from '../../models/Echeance';
+import { RulesServiceInterface } from '../RulesService/RulesService';
 
 export interface PrevisionsServiceInterface {
-  getAll: () => Promise<Prevision[]>;
+  getAllBetweenDates: (start: Month, end: Month) => Promise<Prevision[]>;
   getEcheancesInInterval: (interval: Interval) => Promise<Echeance[]>;
   getEcheancierIds: () => Promise<{ id: number; category: number }[]>;
 }
 
 export const PrevisionsService = (
-  previsionRepository: GenericRepositoryInterface<Prevision>,
   echeanceRepository: EcheanceRepositoryInterface,
+  rulesService: RulesServiceInterface,
 ): PrevisionsServiceInterface => {
   return {
-    getAll: async () => {
-      return previsionRepository.getAll();
+    getAllBetweenDates: async (start: Month, end: Month) => {
+      const rules = await rulesService.getApplyingBetween(start, end);
+      console.log(rules);
+      // start = NULL ou avant start
+      // end = NULL ou après end
+      return [];
     },
     getEcheancesInInterval: (interval: Interval) => {
       return echeanceRepository.inInterval(interval);

@@ -1,12 +1,11 @@
 import { DataSource } from 'typeorm';
 import * as dotenv from 'dotenv';
-import { Rules } from './rules/rules';
-import { Category } from './category/category';
-import { Extrait } from './extrait/extrait';
-import { Encours } from './encours/encours';
-import { Prevision } from './prevision/prevision';
+import { RuleOrm } from './rules/rules';
+import { CategoryOrm } from './category/category';
+import { ExtraitOrm } from './extrait/extrait';
+import { EncoursOrm } from './encours/encours';
 import { Synthese } from './synthese/synthese';
-import { Echeance } from './echeance/echeance';
+import { EcheanceOrm } from './echeance/echeance';
 
 dotenv.config();
 
@@ -19,5 +18,5 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: false,
   logging: false,
-  entities: [Rules, Category, Extrait, Encours, Prevision, Synthese, Echeance],
+  entities: [RuleOrm, CategoryOrm, ExtraitOrm, EncoursOrm, Synthese, EcheanceOrm],
 });

@@ -98,6 +98,11 @@ export const PagePrevisions: FC = () => {
     setEcheances(e);
   };
 
+  const refreshRuledEcheances = async (start: Month, end: Month) => {
+    const p = await previsionService.getPrevisionsBetween(start, end);
+    setRuledEcheances(p);
+  };
+
   const { state, dispatch } = useContext(AppContext);
   const [selected, setSelected] = useState<PrevisionRules>(newRule);
   const [isOpenRulesForm, setIsOpenRulesForm] = useState<boolean>(false);
@@ -106,6 +111,7 @@ export const PagePrevisions: FC = () => {
   const [listEcheanciers, setListEcheanciers] = useState<{ id: string; category: string }[]>([]);
   const [echeancierId, setEcheancierId] = useState<string | undefined>();
   const [echeances, setEcheances] = useState<Echeance[]>([]);
+  const [ruledEcheances, setRuledEcheances] = useState<Echeance[]>([]);
   const [startMonth, setStartDate] = useState<Month>(new Month(new Date()));
 
   useEffect(() => {
@@ -114,6 +120,7 @@ export const PagePrevisions: FC = () => {
 
   useEffect(() => {
     void refreshEcheances();
+    void refreshRuledEcheances(startMonth, startMonth.nextMonth(COLUMN_NUMBER));
   }, [startMonth]);
 
   const previsionRules = state.previsionsRules;
@@ -184,9 +191,9 @@ export const PagePrevisions: FC = () => {
         {ruleSelectContent}
       </div>
       <div className="section" id="matrix">
-        {state.monthlyPrevisions === undefined || (
+        {ruledEcheances === undefined || (
           <PrevisionTable
-            echeanceTable={state.monthlyPrevisions}
+            echeanceTable={ruledEcheances}
             columnNumber={COLUMN_NUMBER}
             startMonth={startMonth}
             onChangeStartDate={setStartDate}

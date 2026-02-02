@@ -22,8 +22,8 @@ const ExtraitsService = (backend: BackendFacadeInterface): ExtraitsServiceInterf
     for (var line of data) {
       line.montant = parseFloat(line.montant);
       line.date = new Date(line.date);
-      if (null !== line.categorie_month) {
-        line.categorie_month = new Date(line.categorie_month);
+      if (line.categoryMonth) {
+        line.categoryMonth = new Date(line.categoryMonth);
       }
       result.push(line);
     }

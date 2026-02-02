@@ -1,5 +1,5 @@
 import { FC, ReactNode, createContext, useEffect, useReducer } from 'react';
-import { Echeance, Encours, PrevisionRules } from '../interfaces/extraits';
+import { Encours, PrevisionRules } from '../interfaces/extraits';
 import factory from '../services/Factory';
 import { Tree, treeDerive, treeMap } from '../exportable/Hierarchie/Tree';
 import { camaieuDerivative } from '../helpers/categories';
@@ -11,7 +11,6 @@ interface AppState {
   categoryColors: Array<Tree<{ color: string }>>;
   previsionsRules: PrevisionRules[];
   encours: Encours[];
-  monthlyPrevisions: Echeance[];
 }
 
 const unassignedCategory = { id: '0', children: [], data: { name: 'Non Assigné' } };
@@ -23,7 +22,6 @@ const initialState: AppState = {
   categoryColors: [],
   previsionsRules: [],
   encours: [],
-  monthlyPrevisions: [],
 };
 
 // pas d'intérêt fonctionnel, c'est là uniquement pour l'export
@@ -94,14 +92,12 @@ const AppContextProvider: FC<Props> = ({ children }) => {
       dispatch({ type: 'setCategoriesFromBackend', data: raw });
       const previsionsRules = await previsionService.getRules();
       const encours = await encoursService.getAll();
-      const previsions = await previsionService.getAllPrevisions();
       dispatch({
         type: 'setAll',
         data: {
           availableMonths,
           previsionsRules,
           encours,
-          monthlyPrevisions: previsions,
         },
       });
     };
