@@ -33,7 +33,7 @@ export const getRouterCategories = (): Router => {
     '/:id',
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
-      const id = parseInt(req.params.id, 10);
+      const id = parseInt(req.params.id as string, 10);
       const category = await categoryService.getCategoryById(id);
 
       if (!category) {
@@ -50,7 +50,7 @@ export const getRouterCategories = (): Router => {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
       const name = req.params.name;
-      await categoryService.createCategory(name);
+      await categoryService.createCategory(name as string);
       res.send({ response: AckAssembler() });
     }),
   );
@@ -59,9 +59,9 @@ export const getRouterCategories = (): Router => {
     '/recolor/:id/:color',
     expressAsyncHandler(async (req: Request, res: Response) => {
       const color = req.params.color;
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const categoryService = res.locals.factory.getCategoryService();
-      await categoryService.updateCategory(id, { color });
+      await categoryService.updateCategory(id, { color: color as string });
 
       res.send({ response: AckAssembler() });
     }),
@@ -71,9 +71,9 @@ export const getRouterCategories = (): Router => {
     '/rename/:id/:name',
     expressAsyncHandler(async (req: Request, res: Response) => {
       const name = req.params.name;
-      const id = parseInt(req.params.id);
+      const id = parseInt(req.params.id as string);
       const categoryService = res.locals.factory.getCategoryService();
-      await categoryService.updateCategory(id, { name });
+      await categoryService.updateCategory(id, { name: name as string });
 
       res.send({ response: AckAssembler() });
     }),
@@ -84,7 +84,7 @@ export const getRouterCategories = (): Router => {
     '/:id',
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
-      const id = parseInt(req.params.id, 10);
+      const id = parseInt(req.params.id as string, 10);
       const dto: UpdateCategoryDto = req.body;
 
       if (!dto.name) {
@@ -108,7 +108,7 @@ export const getRouterCategories = (): Router => {
     '/:id',
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
-      const id = parseInt(req.params.id, 10);
+      const id = parseInt(req.params.id as string, 10);
 
       await categoryService.deleteCategory(id);
       res.status(200).send();
@@ -120,8 +120,8 @@ export const getRouterCategories = (): Router => {
     '/move/:id/:parent',
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
-      const id = parseInt(req.params.id, 10);
-      const parentId = parseInt(req.params.parent, 10);
+      const id = parseInt(req.params.id as string, 10);
+      const parentId = parseInt(req.params.parent as string, 10);
 
       await categoryService.moveCategory(id, parentId);
       res.send({ response: { message: 'Category moved successfully' } });

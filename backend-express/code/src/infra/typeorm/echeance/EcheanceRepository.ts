@@ -3,13 +3,19 @@ import { DAOInterface, GenericRepository, GenericRepositoryInterface } from '../
 import { AppDataSource } from '../ormconfig';
 import { EcheanceOrm } from './echeance';
 import { Interval } from '../../../exportable/Interval/Interval';
-import { Echeance } from '../../../models/Echeance';
+import { Echeance, EcheanceProperties } from '../../../models/Echeance';
 
 const EcheanceOrmRepository = AppDataSource.getRepository(EcheanceOrm);
 
 class EcheanceDAO implements DAOInterface<EcheanceOrm, Echeance> {
   public assemble(o: EcheanceOrm) {
-    return new Echeance(o);
+    const { categorie, ...wanted } = o;
+    const props: EcheanceProperties = {
+      categoryId: o.categorie_id,
+      dueDate: o.due_date,
+      ...wanted,
+    };
+    return new Echeance(props);
   }
 }
 

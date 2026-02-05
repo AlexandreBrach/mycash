@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, RequestHandler } from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import multer from 'multer';
 import { AckAssembler } from './assembler/AckAssembler';
@@ -18,9 +18,10 @@ export const getRouterExtraits = (): Router => {
     },
   });
 
+
   router.post(
     '/upload',
-    upload.single('fileUpload'),
+    upload.single('fileUpload')  as unknown as RequestHandler,
     expressAsyncHandler(async (req: Request, res: Response) => {
       const extraitService = res.locals.factory.getExtraitService();
       if (!req.file) {
@@ -64,10 +65,10 @@ export const getRouterExtraits = (): Router => {
   );
 
   router.post(
-    '/set-category/:categoryId(\\d+)',
+    '/set-category/:categoryId',
     expressAsyncHandler(async (req: Request, res: Response) => {
       const extraitService = res.locals.factory.getExtraitService();
-      const categoryId = parseInt(req.params.categoryId);
+      const categoryId = parseInt(req.params.categoryId as string);
       const ids = req.body.ids;
       await extraitService.assignCategory(categoryId, ids);
       res.status(200).send(AckAssembler());

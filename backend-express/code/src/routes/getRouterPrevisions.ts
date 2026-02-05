@@ -1,6 +1,5 @@
 import { Router, Request, Response } from 'express';
 import expressAsyncHandler from 'express-async-handler';
-import { PrevisionAssembler } from './assembler/PrevisionAssembler';
 import { RuleAssembler } from './assembler/RuleAssembler';
 import { EcheanceAssembler } from './assembler/EcheanceAssembler';
 import { Interval } from '../exportable/Interval/Interval';
@@ -13,12 +12,11 @@ export const getRouterPrevisions = (): Router => {
     '/between/:start/:end',
     expressAsyncHandler(async (req: Request, res: Response) => {
       const { start, end } = req.params;
-
-      const startMonth = Month.fromString(start);
-      const endMonth = Month.fromString(end);
+      const startMonth = Month.fromString(start as string);
+      const endMonth = Month.fromString(end as string);
       const previsionsService = res.locals.factory.getPrevisionsService();
-      const previsions = await previsionsService.getAllBetweenDates(startMonth, endMonth);
-      res.status(200).send(PrevisionAssembler(previsions));
+      const echeances = await previsionsService.getAllBetweenDates(startMonth, endMonth);
+      res.status(200).send(EcheanceAssembler(echeances));
     }),
   );
 
@@ -31,10 +29,11 @@ export const getRouterPrevisions = (): Router => {
     }),
   );
 
+  
   router.get(
     '/echeances/:start/:end',
     expressAsyncHandler(async (req: Request, res: Response) => {
-      const interval = new Interval(new Date(req.params.start), new Date(req.params.end));
+      const interval = new Interval(new Date(req.params.start as string), new Date(req.params.end as string));
       const previsionService = res.locals.factory.getPrevisionsService();
       const echeances = await previsionService.getEcheancesInInterval(interval);
       res.status(200).send(EcheanceAssembler(echeances));
