@@ -9,5 +9,6 @@ export const RuleAssembler = (rule: Rule | Rule[]): any => {
   return {
     ...props,
     id: props.id.toString(),
+    categoryId: props.categoryId.toString(),
   };
 };

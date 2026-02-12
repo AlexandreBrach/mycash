@@ -19,6 +19,15 @@ class CategoryDAO implements DAOInterface<CategoryOrm, Category> {
       parentId: parent_id,
     });
   }
+
+  unassemble(entity: Category): CategoryOrm {
+    const { treeId, ...wanted } = entity.raw();
+
+    return {
+      ...wanted,
+      tree_id: treeId,
+    };
+  }
 }
 
 export const CategoryRepository = (): CategoryRepositoryInterface => {

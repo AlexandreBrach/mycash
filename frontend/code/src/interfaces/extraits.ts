@@ -22,7 +22,6 @@ export type TSynthese = Record<string, Record<string, number>>;
 export interface PrevisionRules {
   id: number;
   categoryId: string;
-  categoryName: string;
   period: number;
   amount: number;
   start: Month;

@@ -94,7 +94,7 @@ const ExtraitsService = (backend: BackendFacadeInterface): ExtraitsServiceInterf
   };
 
   const updateNote = async (id: string, note: string) => {
-    await backend.post<void>(`/add-note/${id}`, { note });
+    await backend.post<void>(`/extraits/set-note`, { note, id });
   };
 
   return { filterExtraits, updateRefDate, retrieveSynthese, uploadExtraits, updateNote };

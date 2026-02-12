@@ -20,7 +20,7 @@ export class EcheanceOrm {
 
   @ManyToOne(() => CategoryOrm, { nullable: true })
   @JoinColumn({ name: 'categorie_id' })
-  categorie!: CategoryOrm;
+  categorie?: CategoryOrm;
 
   @Column({ type: 'int', nullable: true })
   categorie_id!: number;

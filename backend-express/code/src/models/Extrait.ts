@@ -1,6 +1,6 @@
 export interface ExtraitProperties {
-  id: number | undefined;
-  date: Date | undefined;
+  id: number;
+  date: Date;
   montant: number;
   categoryId: number | undefined;
   label: string;

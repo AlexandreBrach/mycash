@@ -6,6 +6,7 @@ export interface CompteEntity extends ObjectLiteral {
 
 export interface DAOInterface<EntityOrm, EntityModel> {
   assemble(o: EntityOrm): EntityModel;
+  unassemble(entity: EntityModel): EntityOrm;
 }
 
 export interface GenericRepositoryInterface<EntityModel, EntityOrm> {
@@ -14,7 +15,7 @@ export interface GenericRepositoryInterface<EntityModel, EntityOrm> {
   findOne: (filter: FindManyOptions<EntityOrm>) => Promise<EntityModel | null>;
   find: (filter: FindManyOptions<EntityOrm>) => Promise<EntityModel[]>;
   create: (data: Omit<EntityOrm, 'id'>) => Promise<void>;
-  update: (id: number, data: Partial<EntityOrm>) => Promise<EntityModel>;
+  update: (id: number, data: EntityModel) => Promise<EntityModel>;
   delete: (id: number) => Promise<void>;
   bulkUpdateById: <K extends keyof EntityOrm>(propertyName: K, value: EntityOrm[K], ids: number[]) => Promise<void>;
 }
@@ -48,13 +49,13 @@ export const GenericRepository = <EntityModel, EntityOrm extends CompteEntity>(
     await repository.save(entity);
   };
 
-  const update = async (id: number, data: Partial<EntityOrm>) => {
-    const entity = await repository.findOneBy({ id } as FindOptionsWhere<EntityOrm>);
-    if (!entity) {
+  const update = async (id: number, model: EntityModel) => {
+    const existing = await repository.findOneBy({ id } as FindOptionsWhere<EntityOrm>);
+    if (!existing) {
       throw Error('Not found !');
     }
 
-    Object.assign(entity, data);
+    const entity = dao.unassemble(model);
     const orm = await repository.save(entity);
     return dao.assemble(orm);
   };

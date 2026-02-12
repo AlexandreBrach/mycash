@@ -23,6 +23,10 @@ class ExtraitDAO implements DAOInterface<ExtraitOrm, Extrait> {
       categoryMonth: categorie_month,
     });
   }
+  public unassemble(entity: Extrait): ExtraitOrm {
+    const { unicityFlag, dateInsertion, ...wanted } = entity.raw();
+    return { ...wanted, unicity_flag: unicityFlag, date_insertion: dateInsertion };
+  }
 }
 
 export const ExtraitRepository = (): ExtraitRepositoryInterface => {

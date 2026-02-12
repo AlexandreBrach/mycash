@@ -1,6 +1,5 @@
 import { Request, Response, Router } from 'express';
 import expressAsyncHandler from 'express-async-handler';
-import { UpdateCategoryDto } from '../services/CategoryService/CategoryService';
 import { CategoryAssembler } from './assembler/CategoryAssembler';
 import { CategoryTreeAssembler } from './assembler/CategoryTreeAssembler';
 import { AckAssembler } from './assembler/AckAssembler';
@@ -61,7 +60,7 @@ export const getRouterCategories = (): Router => {
       const color = req.params.color;
       const id = parseInt(req.params.id as string);
       const categoryService = res.locals.factory.getCategoryService();
-      await categoryService.updateCategory(id, { color: color as string });
+      await categoryService.updateProperty(id, { color: color as string });
 
       res.send({ response: AckAssembler() });
     }),
@@ -73,7 +72,7 @@ export const getRouterCategories = (): Router => {
       const name = req.params.name;
       const id = parseInt(req.params.id as string);
       const categoryService = res.locals.factory.getCategoryService();
-      await categoryService.updateCategory(id, { name: name as string });
+      await categoryService.updateProperty(id, { name: name as string });
 
       res.send({ response: AckAssembler() });
     }),
@@ -85,14 +84,14 @@ export const getRouterCategories = (): Router => {
     expressAsyncHandler(async (req: Request, res: Response) => {
       const categoryService = res.locals.factory.getCategoryService();
       const id = parseInt(req.params.id as string, 10);
-      const dto: UpdateCategoryDto = req.body;
+      const props: { name: string } = req.body;
 
-      if (!dto.name) {
+      if (!props.name) {
         res.status(400).send({ error: 'Name is required' });
         return;
       }
 
-      const category = await categoryService.updateCategory(id, dto);
+      const category = await categoryService.updateProperty(id, props);
 
       if (!category) {
         res.status(404).send({ error: 'Category not found' });

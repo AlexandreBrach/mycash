@@ -1,6 +1,8 @@
-import "./PrevisionsSelect.scss"
-import { FC } from "react";
-import { PrevisionRules } from "../../interfaces/extraits";
+import './PrevisionsSelect.scss';
+import { FC, useContext } from 'react';
+import { PrevisionRules } from '../../interfaces/extraits';
+import { AppContext } from '../../Pages/AppContext';
+import { treeFindById } from '../../exportable/Hierarchie/Tree';
 
 interface Props {
   previsions: PrevisionRules[];
@@ -9,15 +11,14 @@ interface Props {
 }
 
 const PrevisionsSelect: FC<Props> = ({ previsions, value, onSelect }) => {
+  const { state } = useContext(AppContext);
   return (
     <ul className="prevision-select">
-      {previsions.map((prevision) =>
-        <li
-          key={prevision.id}
-          onClick={() => onSelect(prevision.id)}>
-          {prevision.categoryName}
+      {previsions.map((prevision) => (
+        <li key={prevision.id} onClick={() => onSelect(prevision.id)}>
+          {treeFindById<{ name: string }>(state.availableCategories, prevision.categoryId)?.name}
         </li>
-      )}
+      ))}
     </ul>
   );
 };

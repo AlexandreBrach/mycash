@@ -1,5 +1,5 @@
 export interface EncoursProperties {
-  id: number | undefined;
+  id: number;
   amount: number;
   due_date: Date;
   closed: boolean;

@@ -17,6 +17,15 @@ class EcheanceDAO implements DAOInterface<EcheanceOrm, Echeance> {
     };
     return new Echeance(props);
   }
+  unassemble(entity: Echeance): EcheanceOrm {
+    const { dueDate, categoryId, ...wanted } = entity.raw();
+
+    return {
+      ...wanted,
+      due_date: dueDate,
+      categorie_id: categoryId,
+    };
+  }
 }
 
 export interface EcheanceRepositoryInterface extends GenericRepositoryInterface<Echeance, EcheanceOrm> {

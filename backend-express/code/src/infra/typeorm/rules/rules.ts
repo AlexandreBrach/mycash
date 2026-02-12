@@ -9,18 +9,18 @@ export class RuleOrm {
   @Column()
   period!: number;
 
-  @Column()
+  @Column({ type: 'decimal', precision: 9, scale: 2 })
   amount!: number;
 
   @Column({ nullable: true })
-  end!: Date;
+  end?: Date;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   start!: Date;
 
   @ManyToOne(() => CategoryOrm, { nullable: true })
   @JoinColumn({ name: 'categorie_id' })
-  categorie!: CategoryOrm;
+  categorie?: CategoryOrm;
 
   @Column({ type: 'int', nullable: true })
   categorie_id!: number;

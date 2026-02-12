@@ -7,7 +7,7 @@ export interface RuleProperties {
   period: number;
   amount: number;
   start: Date;
-  end: Date | null;
+  end?: Date;
 }
 
 export class Rule {
@@ -29,10 +29,11 @@ export class Rule {
     const endTimestamp = end.getDate().valueOf();
     const response: Echeance[] = [];
     const echeanceProps = {
-      id: null,
+      id: 0,
       amount: this.data.amount,
       categoryId: this.data.categoryId,
       collection: null,
+      override: false,
     };
     while (iterationMonth.getDate().valueOf() <= endTimestamp) {
       response.push(

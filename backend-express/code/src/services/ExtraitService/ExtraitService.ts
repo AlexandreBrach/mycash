@@ -8,6 +8,7 @@ export interface ExtraitServiceInterface {
   getExtraitsByCategoryAndMonth: (p: { categoryId?: number; month?: string }) => Promise<Extrait[]>;
   assignCategory: (categoryId: number, extraitsId: number[]) => Promise<void>;
   assignDateRef: (date: Date, extraitsId: number[]) => Promise<void>;
+  assignNote: (note: string, extraitsId: number) => Promise<void>;
   injectCsv: (csvContent: string) => Promise<number>;
 }
 
@@ -47,6 +48,9 @@ export const ExtraitService = (extraitRepository: ExtraitRepositoryInterface): E
     },
     assignDateRef: async (date: Date, extraitsIds: number[]) => {
       await extraitRepository.bulkUpdateById('categorie_month', date, extraitsIds);
+    },
+    assignNote: async (note: string, extraitsId: number) => {
+      await extraitRepository.bulkUpdateById('note', note, [extraitsId]);
     },
     injectCsv: async (csvContent: string) => {
       const lines = csvContent.trim().split('\n');
@@ -88,7 +92,7 @@ export const ExtraitService = (extraitRepository: ExtraitRepositoryInterface): E
           await extraitRepository.create(extrait);
           insertedCount++;
         } catch (error) {
-          throw new Error(`Erreur lors de l'insertion de la ligne : ${line}. Erreur: ${error}`);
+          console.log(`Erreur lors de l'insertion de la ligne : ${line}. Erreur: ${error}`);
         }
       }
 

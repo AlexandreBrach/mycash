@@ -18,10 +18,9 @@ export const getRouterExtraits = (): Router => {
     },
   });
 
-
   router.post(
     '/upload',
-    upload.single('fileUpload')  as unknown as RequestHandler,
+    upload.single('fileUpload') as unknown as RequestHandler,
     expressAsyncHandler(async (req: Request, res: Response) => {
       const extraitService = res.locals.factory.getExtraitService();
       if (!req.file) {
@@ -83,6 +82,16 @@ export const getRouterExtraits = (): Router => {
       const parts = month.split('-').map((e: string) => parseInt(e));
       const date = new Date(Date.UTC(parts[0], parts[1]) - 1);
       await extraitService.assignDateRef(date, ids);
+      res.status(200).send(AckAssembler());
+    }),
+  );
+
+  router.post(
+    '/set-note',
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const extraitService = res.locals.factory.getExtraitService();
+      const { id, note } = req.body;
+      await extraitService.assignNote(note, id);
       res.status(200).send(AckAssembler());
     }),
   );

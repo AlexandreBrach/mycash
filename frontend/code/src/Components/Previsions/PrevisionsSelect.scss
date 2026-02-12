@@ -1,17 +1,19 @@
-@use "../../style/vars.scss";
+@use '../../style/vars.scss';
 
 ul.prevision-select {
+  margin: 0;
+  padding: 0;
+  max-height: 20em;
+  overflow-y: auto;
+
+  li {
     margin: 0;
     padding: 0;
+    list-style: none;
+    cursor: pointer;
 
-    li {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        cursor: pointer;
-
-        &:hover {
-            background-color: vars.$color-selection;
-        }
+    &:hover {
+      background-color: vars.$color-selection;
     }
+  }
 }

@@ -5,6 +5,7 @@ import { RuleRepositoryInterface } from '../../infra/typeorm/rules/RuleRepositor
 export interface RulesServiceInterface {
   getAll: () => Promise<Rule[]>;
   getApplyingBetween: (start: Month, end: Month) => Promise<Rule[]>;
+  update: (id: number, rule: Rule) => Promise<Rule>;
 }
 
 export const RulesService = (rulesRepository: RuleRepositoryInterface): RulesServiceInterface => {
@@ -16,8 +17,13 @@ export const RulesService = (rulesRepository: RuleRepositoryInterface): RulesSer
     return await rulesRepository.getRulesApplyingBetween(start, end);
   };
 
+  const update = async (id: number, rule: Rule) => {
+    return rulesRepository.update(id, rule);
+  };
+
   return {
     getAll,
     getApplyingBetween,
+    update,
   };
 };

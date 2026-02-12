@@ -1,17 +1,12 @@
 import { CategoryRepositoryInterface } from '../../infra/typeorm/category/CategoryRepository';
-import { Category } from '../../models/Category';
-
-export interface UpdateCategoryDto {
-  color: string;
-  name: string;
-}
+import { Category, CategoryProperties } from '../../models/Category';
 
 export interface CategoryServiceInterface {
   getAllCategories: () => Promise<Category[]>;
   getCategoryById: (id: number) => Promise<Category | null>;
   getCategoryTree: () => Promise<CategoryTree>;
   createCategory: (name: string) => Promise<void>;
-  updateCategory: (id: number, dto: Partial<UpdateCategoryDto>) => Promise<Category | null>;
+  updateProperty: (id: number, props: Partial<{ color: string; name: string }>) => Promise<Category | null>;
   deleteCategory: (id: number) => Promise<void>;
   moveCategory: (id: number, parentId: number) => Promise<void>;
 }
@@ -70,8 +65,19 @@ export const CategoryService = (categoryRepository: CategoryRepositoryInterface)
       return categoryRepository.simpleInsert(name);
     },
 
-    updateCategory: async (id: number, dto: Partial<UpdateCategoryDto>) => {
-      return await categoryRepository.update(id, dto);
+    updateProperty: async (id: number, props: Partial<{ color: string; name: string }>) => {
+      const category = await categoryRepository.getById(id);
+      if (!category) {
+        throw 'No category Found';
+      }
+      const newProps = category.raw();
+      if (props.color) {
+        newProps.color = props.color;
+      }
+      if (props.name) {
+        newProps.name = props.name;
+      }
+      return await categoryRepository.update(id, new Category(newProps));
     },
 
     deleteCategory: async (id: number) => {

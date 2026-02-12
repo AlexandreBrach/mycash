@@ -12,6 +12,15 @@ class RuleDAO implements DAOInterface<RuleOrm, Rule> {
     const { categorie_id, ...all } = o;
     return new Rule({ ...all, categoryId: categorie_id });
   }
+  unassemble(entity: Rule): RuleOrm {
+    const { categoryId, ...wanted } = entity.raw();
+
+    return {
+      ...wanted,
+      end: wanted.end || undefined,
+      categorie_id: categoryId,
+    };
+  }
 }
 
 export type RulesFilter = FindManyOptions<RuleOrm>;

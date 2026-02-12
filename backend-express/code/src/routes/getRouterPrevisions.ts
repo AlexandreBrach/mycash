@@ -4,6 +4,9 @@ import { RuleAssembler } from './assembler/RuleAssembler';
 import { EcheanceAssembler } from './assembler/EcheanceAssembler';
 import { Interval } from '../exportable/Interval/Interval';
 import { Month } from '../exportable/Interval/Month';
+import validateRequestEntries from '../infra/mvc/validateRequestEntries';
+import { Rule, RuleProperties } from '../models/Rule';
+import { RuleValidator } from './validator/RuleValidator';
 
 export const getRouterPrevisions = (): Router => {
   const router = Router();
@@ -29,7 +32,17 @@ export const getRouterPrevisions = (): Router => {
     }),
   );
 
-  
+  router.post(
+    '/rule',
+    expressAsyncHandler(async (req: Request, res: Response) => {
+      const props = validateRequestEntries<RuleProperties>(RuleValidator, req.body);
+      const rule = new Rule(props);
+      const rulesService = res.locals.factory.getRulesService();
+      const rules = await rulesService.update(props.id, rule);
+      res.status(200).send(RuleAssembler(rules));
+    }),
+  );
+
   router.get(
     '/echeances/:start/:end',
     expressAsyncHandler(async (req: Request, res: Response) => {

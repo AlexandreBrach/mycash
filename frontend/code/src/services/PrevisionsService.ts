@@ -52,7 +52,7 @@ const PrevisionsService = (backend: BackendFacadeInterface): PrevisionsServiceIn
       if (rule.end) {
         e.end = backend.toBackendDateFormat(rule.end.getDate());
       }
-      return await backend.post<void>('/previsions/rule', { rule: { ...rule, ...e } });
+      return await backend.post<void>('/previsions/rule', { ...rule, ...e });
     },
     deleteRule: async (id: number): Promise<void> => {
       return await backend.post<void>(`/previsions/rule/${id}/delete`, {});

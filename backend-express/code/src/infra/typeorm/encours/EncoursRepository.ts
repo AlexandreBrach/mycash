@@ -11,6 +11,13 @@ class EncoursDAO implements DAOInterface<EncoursOrm, Encours> {
     const { categorie_id, ...all } = o;
     return new Encours({ ...all, categoryId: categorie_id });
   }
+  unassemble(entity: Encours): EncoursOrm {
+    const { ...wanted } = entity.raw();
+
+    return {
+      ...wanted,
+    };
+  }
 }
 
 export interface EncoursRepositoryInterface extends GenericRepositoryInterface<Encours, EncoursOrm> {}

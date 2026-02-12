@@ -17,7 +17,6 @@ const now = new Date();
 const newRule: PrevisionRules = {
   amount: 0,
   categoryId: '1',
-  categoryName: 'unknown',
   id: 0,
   period: 1,
   start: new Month(now),
