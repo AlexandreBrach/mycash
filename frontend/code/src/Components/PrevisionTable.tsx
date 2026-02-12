@@ -1,5 +1,5 @@
 import './PrevisionTable.scss';
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import { AppContext } from '../Pages/AppContext';
 import factory from '../services/Factory';
 import { getPrevisionsMonthTotal } from '../helpers/previsions';

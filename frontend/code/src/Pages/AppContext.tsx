@@ -80,10 +80,6 @@ const AppContextProvider: FC<Props> = ({ children }) => {
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
-  const store = {
-    state,
-    dispatch,
-  };
 
   useEffect(() => {
     const run = async () => {
@@ -104,7 +100,7 @@ const AppContextProvider: FC<Props> = ({ children }) => {
     void run();
   }, [monthService, categoryService, previsionService, encoursService]);
 
-  return <AppContext.Provider value={store}>{children}</AppContext.Provider>;
+  return <AppContext.Provider value={{ state, dispatch }}>{children}</AppContext.Provider>;
 };
 
 export default AppContextProvider;

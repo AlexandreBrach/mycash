@@ -31,14 +31,14 @@ export const PagePrevisions: FC = () => {
   };
 
   const handleSelectRule = (id: number | undefined) => {
-    const rule = previsionRules.filter((rule) => rule.id === id)[0];
+    const rule = state.previsionsRules.filter((rule) => rule.id === id)[0];
     setSelected(rule);
     setIsOpenRulesForm(true);
   };
 
   const refreshRules = async () => {
     const previsionsRules = await previsionService.getRules();
-    await dispatch({ type: 'setPrevisionsRules', data: { previsionsRules } });
+    dispatch({ type: 'setPrevisionsRules', data: { previsionsRules } });
   };
 
   const handleValidatonRule = async (value: PrevisionRules) => {
@@ -118,11 +118,13 @@ export const PagePrevisions: FC = () => {
   }, []);
 
   useEffect(() => {
+    void void refreshRuledEcheances(startMonth, startMonth.nextMonth(COLUMN_NUMBER));
+  }, [startMonth, state.previsionsRules]);
+
+  useEffect(() => {
     void refreshEcheances();
-    void refreshRuledEcheances(startMonth, startMonth.nextMonth(COLUMN_NUMBER));
   }, [startMonth]);
 
-  const previsionRules = state.previsionsRules;
   const previsionService = factory.getPrevisionsService();
 
   const ruleSelectContent = (
@@ -130,9 +132,9 @@ export const PagePrevisions: FC = () => {
       <h1>Previsions</h1>
       <h2>Réccurences</h2>
       <div id="reccurence-list">
-        {previsionRules && (
+        {state.previsionsRules && (
           <PrevisionsSelect
-            previsions={previsionRules}
+            previsions={state.previsionsRules}
             onSelect={handleSelectRule}
             value={selected ? selected.id : undefined}
           />
