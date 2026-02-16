@@ -27,6 +27,7 @@ export type RulesFilter = FindManyOptions<RuleOrm>;
 
 export interface RuleRepositoryInterface extends GenericRepositoryInterface<Rule, RuleOrm> {
   getRulesApplyingBetween: (start: Month, end: Month) => Promise<Rule[]>;
+  getRulesApplyingAfter: (after: Month) => Promise<Rule[]>;
 }
 
 export const RulesRepository = (): RuleRepositoryInterface => {
@@ -46,6 +47,16 @@ export const RulesRepository = (): RuleRepositoryInterface => {
         where: {
           start: Raw((alias) => `${alias} IS NULL OR ${alias} <= :endDate`, { endDate: end.getEndDate() }),
           end: Raw((alias) => `${alias} IS NULL OR ${alias} >= :startDate`, { startDate: start.getDate() }),
+        },
+      };
+      const rules = await generic.find(filter);
+      return rules;
+    },
+
+    getRulesApplyingAfter: async (after: Month): Promise<Rule[]> => {
+      const filter: FindManyOptions<RuleOrm> = {
+        where: {
+          end: Raw((alias) => `${alias} IS NULL OR ${alias} >= :endDate`, { endDate: after.getDate() }),
         },
       };
       const rules = await generic.find(filter);

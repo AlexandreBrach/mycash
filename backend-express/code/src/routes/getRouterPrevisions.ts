@@ -24,10 +24,12 @@ export const getRouterPrevisions = (): Router => {
   );
 
   router.get(
-    '/rules',
+    '/rules/:after',
     expressAsyncHandler(async (req: Request, res: Response) => {
+      const { after } = req.params;
+      const month = Month.fromString(after);
       const rulesService = res.locals.factory.getRulesService();
-      const rules = await rulesService.getAll();
+      const rules = await rulesService.getApplyingAfter(month);
       res.status(200).send(RuleAssembler(rules));
     }),
   );

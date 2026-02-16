@@ -3,7 +3,8 @@ import { BackendEcheance, Echeance, Echeancier, PrevisionRules } from '../interf
 import { BackendFacadeInterface } from './backendFacade';
 
 export interface PrevisionsServiceInterface {
-  getRules: () => Promise<PrevisionRules[]>;
+  getRules: (month: Month) => Promise<PrevisionRules[]>;
+  getMonthRules: (month: Month) => Promise<PrevisionRules[]>;
   setRule: (rule: PrevisionRules) => Promise<void>;
   deleteRule: (id: number) => Promise<void>;
   getEcheancier: (collection: string) => Promise<Echeancier>;
@@ -34,16 +35,23 @@ const PrevisionsService = (backend: BackendFacadeInterface): PrevisionsServiceIn
     await backend.get(`/previsions/echeancier/${collection}/delete`);
   };
 
-  return {
-    getRules: async (): Promise<PrevisionRules[]> => {
-      const response = await backend.get<any[]>('/previsions/rules');
+  const assembleRules = (data: any): PrevisionRules => {
+    return {
+      ...data,
+      amount: parseFloat(data.amount as string),
+      start: new Month(new Date(data.start)),
+      end: data.end === null ? undefined : new Month(new Date(data.end)),
+    };
+  };
 
-      return response.map((response) => ({
-        ...response,
-        amount: parseFloat(response.amount as string),
-        start: new Month(new Date(response.start)),
-        end: response.end === null ? undefined : new Month(new Date(response.end)),
-      }));
+  return {
+    getRules: async (month: Month): Promise<PrevisionRules[]> => {
+      const response = await backend.get<any[]>(`/previsions/rules/${month.toString()}`);
+      return response.map(assembleRules);
+    },
+    getMonthRules: async (month: Month): Promise<PrevisionRules[]> => {
+      const response = await backend.get<any[]>(`/previsions/rules/month/${month.toString()}`);
+      return response.map(assembleRules);
     },
     setRule: async (rule: PrevisionRules): Promise<void> => {
       const e: Record<string, string> = {

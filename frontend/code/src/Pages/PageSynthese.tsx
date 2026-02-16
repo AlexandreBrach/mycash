@@ -3,7 +3,7 @@ import { FC, useContext, useEffect, useState } from 'react';
 import Layout from '../Layout';
 import factory from '../services/Factory';
 import SyntheseGridTree from '../Components/SyntheseGridTree';
-import { Echeance, Encours, ExtraitLine, TSynthese } from '../interfaces/extraits';
+import { Echeance, Encours, ExtraitLine, PrevisionRules, TSynthese } from '../interfaces/extraits';
 import { AppContext } from './AppContext';
 import { BsFillCaretLeftFill, BsFillCaretRightFill } from 'react-icons/bs';
 import { CriteriaContext } from './CriteriaContext';
@@ -65,6 +65,7 @@ const PageSynthese: FC = () => {
   const [solde, setSolde] = useState<number>(0);
   const [echeances, setEcheances] = useState<Echeance[]>([]);
   const [encours, setEncours] = useState<Encours[]>([]);
+  const [previsionsRules, setPrevisionsRules] = useState<PrevisionRules[]>([]);
 
   const selectedMonth = state.availableMonths.filter((month) => month === settings.syntheseMonth)[0];
   const currentIndex = state.availableMonths.findIndex((m: Month) => m === settings.syntheseMonth);
@@ -75,6 +76,7 @@ const PageSynthese: FC = () => {
     const run = async () => {
       const synthese = await extraitService.retrieveSynthese();
       const s = await backendStateService.retrieveSolde();
+      const rules = await previsionService.getRules;
       setSolde(s);
       setSynthese(synthese);
     };
@@ -95,7 +97,7 @@ const PageSynthese: FC = () => {
     return <></>;
   }
 
-  let previsions = month ? getMonthPrevisions(state.previsionsRules, month) : [];
+  let previsions = month ? getMonthPrevisions(previsionsRules, month) : [];
 
   // on ajoute les échéances issue des échéanciers statiques
   echeances.forEach((e) => {

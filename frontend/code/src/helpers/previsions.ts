@@ -124,11 +124,11 @@ export const getPrevisionsMonthTotal = (echeances: Echeance[]): Echeance[] => {
   let tmp: Record<string, number> = {};
   echeances.forEach((e) => {
     const index = e.date.getDate().valueOf();
-    return (tmp[index] = tmp[index] === undefined ? e.amount : (tmp[index] += e.amount));
+    tmp[index] = tmp[index] === undefined ? e.amount : (tmp[index] += e.amount);
   });
   return Object.keys(tmp).map(
     (date): Echeance => ({
-      date: new Month(new Date(date)),
+      date: new Month(new Date(parseInt(date))),
       categoryId: 'TOTAL',
       amount: tmp[date],
     }),

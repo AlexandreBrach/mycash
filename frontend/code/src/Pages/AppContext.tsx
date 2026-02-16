@@ -9,7 +9,6 @@ interface AppState {
   availableMonths: Month[];
   availableCategories: Array<Tree<{ name: string }>>;
   categoryColors: Array<Tree<{ color: string }>>;
-  previsionsRules: PrevisionRules[];
   encours: Encours[];
 }
 
@@ -20,7 +19,6 @@ const initialState: AppState = {
   availableMonths: [],
   availableCategories: [unassignedCategory],
   categoryColors: [],
-  previsionsRules: [],
   encours: [],
 };
 
@@ -64,11 +62,6 @@ const AppContextProvider: FC<Props> = ({ children }) => {
           availableCategories: [unassignedCategory, ...availableCategories],
           categoryColors: [unassignedColor, ...categoryColors],
         };
-      case 'setPrevisionsRules':
-        return {
-          ...state,
-          previsionsRules: action.data.previsionsRules,
-        };
       case 'setEncours':
         return {
           ...state,
@@ -86,13 +79,11 @@ const AppContextProvider: FC<Props> = ({ children }) => {
       const availableMonths = await monthService.getAvailables();
       const raw = await categoryService.getTree();
       dispatch({ type: 'setCategoriesFromBackend', data: raw });
-      const previsionsRules = await previsionService.getRules();
       const encours = await encoursService.getAll();
       dispatch({
         type: 'setAll',
         data: {
           availableMonths,
-          previsionsRules,
           encours,
         },
       });

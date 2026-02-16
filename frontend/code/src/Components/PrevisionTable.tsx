@@ -80,7 +80,7 @@ const PrevisionTable: FC<Props> = ({ echeanceTable, startMonth, onChangeStartDat
         <tr>
           <td>TOTAL</td>
           {months.map((month: Month) => {
-            const total = totals.filter((e) => e.date.getDate() === month.getDate())[0];
+            const total = totals.filter((e) => e.date.getDate().valueOf() === month.getDate().valueOf())[0];
             return (
               <td key={`total${month}`}>
                 <Montant value={total !== undefined ? total.amount : 0} />

@@ -31,14 +31,14 @@ export const PagePrevisions: FC = () => {
   };
 
   const handleSelectRule = (id: number | undefined) => {
-    const rule = state.previsionsRules.filter((rule) => rule.id === id)[0];
+    const rule = previsionsRules.filter((rule) => rule.id === id)[0];
     setSelected(rule);
     setIsOpenRulesForm(true);
   };
 
   const refreshRules = async () => {
-    const previsionsRules = await previsionService.getRules();
-    dispatch({ type: 'setPrevisionsRules', data: { previsionsRules } });
+    const previsionsRules = await previsionService.getRules(startMonth);
+    setPrevisionsRules(previsionsRules);
   };
 
   const handleValidatonRule = async (value: PrevisionRules) => {
@@ -112,14 +112,16 @@ export const PagePrevisions: FC = () => {
   const [echeances, setEcheances] = useState<Echeance[]>([]);
   const [ruledEcheances, setRuledEcheances] = useState<Echeance[]>([]);
   const [startMonth, setStartDate] = useState<Month>(new Month(new Date()));
+  const [previsionsRules, setPrevisionsRules] = useState<PrevisionRules[]>([]);
 
   useEffect(() => {
     void refreshEcheancierList();
+    void refreshRules();
   }, []);
 
   useEffect(() => {
     void void refreshRuledEcheances(startMonth, startMonth.nextMonth(COLUMN_NUMBER));
-  }, [startMonth, state.previsionsRules]);
+  }, [startMonth, previsionsRules]);
 
   useEffect(() => {
     void refreshEcheances();
@@ -132,9 +134,9 @@ export const PagePrevisions: FC = () => {
       <h1>Previsions</h1>
       <h2>Réccurences</h2>
       <div id="reccurence-list">
-        {state.previsionsRules && (
+        {previsionsRules && (
           <PrevisionsSelect
-            previsions={state.previsionsRules}
+            previsions={previsionsRules}
             onSelect={handleSelectRule}
             value={selected ? selected.id : undefined}
           />
