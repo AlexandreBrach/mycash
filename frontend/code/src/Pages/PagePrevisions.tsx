@@ -11,6 +11,7 @@ import PrevisionTable from '../Components/PrevisionTable';
 import EcheancierForm from '../Components/EcheancierForm';
 import { getCategoryName } from '../helpers/categories';
 import { Month } from '../exportable/Interval/Month';
+import { GraphPrevisions } from '../Components/Graph/Previsions';
 
 const now = new Date();
 
@@ -113,6 +114,7 @@ export const PagePrevisions: FC = () => {
   const [ruledEcheances, setRuledEcheances] = useState<Echeance[]>([]);
   const [startMonth, setStartDate] = useState<Month>(new Month(new Date()));
   const [previsionsRules, setPrevisionsRules] = useState<PrevisionRules[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<Month | undefined>(undefined);
 
   useEffect(() => {
     void refreshEcheancierList();
@@ -188,6 +190,12 @@ export const PagePrevisions: FC = () => {
     </>
   );
 
+  const monthRuledEcheances = ruledEcheances.filter(
+    (e) => e.date.getDate().valueOf() === selectedMonth?.getDate().valueOf(),
+  );
+
+  const values = monthRuledEcheances.filter((e) => e.amount < 0);
+
   const content = (
     <div id="page-previsions">
       <div className="section" id="list">
@@ -195,12 +203,21 @@ export const PagePrevisions: FC = () => {
       </div>
       <div className="section" id="matrix">
         {ruledEcheances === undefined || (
-          <PrevisionTable
-            echeanceTable={ruledEcheances}
-            columnNumber={COLUMN_NUMBER}
-            startMonth={startMonth}
-            onChangeStartDate={setStartDate}
-          />
+          <>
+            <div id="previsions-table">
+              <PrevisionTable
+                echeanceTable={ruledEcheances}
+                columnNumber={COLUMN_NUMBER}
+                startMonth={startMonth}
+                onChangeStartDate={setStartDate}
+                selectedMonth={selectedMonth}
+                onSelectMonth={setSelectedMonth}
+              />
+            </div>
+            <div id="previsions-charts">
+              {selectedMonth && <GraphPrevisions name={selectedMonth.toString()} values={values} />}
+            </div>
+          </>
         )}
       </div>
     </div>

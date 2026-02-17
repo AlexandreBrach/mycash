@@ -69,7 +69,6 @@ const ExtraitsService = (backend: BackendFacadeInterface): ExtraitsServiceInterf
    */
   const retrieveSynthese = async (): Promise<TSynthese> => {
     const data = await backend.get<Record<string, Record<string, string | number>>>('/synthese-category');
-
     const response: TSynthese = {};
     Object.keys(data).forEach((monthName: string) => {
       response[monthName] = {};

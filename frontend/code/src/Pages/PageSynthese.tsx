@@ -28,7 +28,7 @@ const PageSynthese: FC = () => {
   };
 
   /**
-   * Return the global sum (= the sum of the tops if all the intermediate sum are calculated with calcSum)
+   * Return the global sum (= the sum of the tops once all the intermediate sum are calculated with calcSum)
    *
    * @param flat
    * @returns
@@ -76,7 +76,6 @@ const PageSynthese: FC = () => {
     const run = async () => {
       const synthese = await extraitService.retrieveSynthese();
       const s = await backendStateService.retrieveSolde();
-      const rules = await previsionService.getRules;
       setSolde(s);
       setSynthese(synthese);
     };

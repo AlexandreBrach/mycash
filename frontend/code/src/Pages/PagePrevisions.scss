@@ -15,31 +15,14 @@
   #matrix {
     font-size: 0.8em;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 
-    table {
-      width: 100%;
-
-      tr:nth-child(odd) {
-        background: vars.$color-dark;
-      }
-
-      tr:nth-child(even) {
-        background: vars.$color-shadow;
-      }
-
-      tr:last-child {
-        background-color: vars.$color-black;
-      }
-
-      th,
-      tr,
-      td {
-        border: 1px solid vars.$color-black !important;
-      }
-
-      td {
-        text-align: right;
-      }
+    #previsions-table {
+      flex-grow: 2;
+    }
+    #previsions-charts {
+      flex-grow: 1;
     }
   }
 }

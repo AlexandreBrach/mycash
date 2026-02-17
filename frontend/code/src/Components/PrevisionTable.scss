@@ -1,7 +1,39 @@
+@use '../style/vars.scss';
+
 table.previsions {
+  width: 100%;
+
+  tr:nth-child(odd) {
+    background: vars.$color-dark;
+  }
+
+  tr:nth-child(even) {
+    background: vars.$color-shadow;
+  }
+
+  tr:last-child {
+    background-color: vars.$color-black;
+  }
+
+  th,
+  tr,
+  td {
+    border: 1px solid vars.$color-black !important;
+  }
+
+  th {
+    &.selected {
+      background-color: vars.$color-selected !important;
+      color: black;
+    }
+  }
+
+  td {
+    text-align: right;
+  }
+
   tr {
     td:not(:first-child) {
-      width: 10em;
     }
   }
 }

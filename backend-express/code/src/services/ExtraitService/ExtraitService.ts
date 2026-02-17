@@ -75,6 +75,8 @@ export const ExtraitService = (extraitRepository: ExtraitRepositoryInterface): E
         const dateComptabilisation = columns[0];
         const libelleSimplifie = columns[1];
         const libelleOperation = columns[2];
+        const reference = columns[3];
+        const infoComplementaires = columns[4] !== '' ? ` (${columns[4]})` : '';
         const debit = columns[8];
         const credit = columns[9];
         const dateOperation = columns[10];
@@ -83,10 +85,10 @@ export const ExtraitService = (extraitRepository: ExtraitRepositoryInterface): E
           const extrait: Omit<ExtraitOrm, 'id'> = {
             date: parseDateFR(dateComptabilisation),
             montant: parseMontant(debit, credit),
-            label: libelleSimplifie || libelleOperation,
+            label: `${libelleOperation}${infoComplementaires}`,
             date_insertion: new Date(),
             unicity_flag: 0,
-            note: libelleOperation,
+            note: reference,
           };
 
           await extraitRepository.create(extrait);

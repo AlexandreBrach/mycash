@@ -14,9 +14,18 @@ interface Props {
   startMonth: Month;
   onChangeStartDate: (value: Month) => void;
   columnNumber: number;
+  selectedMonth: Month | undefined;
+  onSelectMonth: (m: Month) => void;
 }
 
-const PrevisionTable: FC<Props> = ({ echeanceTable, startMonth, onChangeStartDate, columnNumber }) => {
+const PrevisionTable: FC<Props> = ({
+  echeanceTable,
+  startMonth,
+  onChangeStartDate,
+  columnNumber,
+  selectedMonth,
+  onSelectMonth,
+}) => {
   const handleLeft = () => {
     onChangeStartDate(startMonth.nextMonth(-1));
   };
@@ -46,7 +55,13 @@ const PrevisionTable: FC<Props> = ({ echeanceTable, startMonth, onChangeStartDat
         <tr>
           <th></th>
           {months.map((month: Month, i) => (
-            <th key={month.toString()}>
+            <th
+              key={month.toString()}
+              onClick={() => {
+                onSelectMonth(month);
+              }}
+              className={selectedMonth?.getDate().valueOf() === month.getDate().valueOf() ? 'selected' : ''}
+            >
               {i === 0 && (
                 <BiSolidChevronLeftCircle className="icon-button" style={{ float: 'left' }} onClick={handleLeft} />
               )}
